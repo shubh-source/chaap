@@ -10,6 +10,7 @@ const Razorpay = require('razorpay');
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
+const MENU = require('./public/menu.js');
 const rateLimit = require('express-rate-limit');
 
 const app = express();
@@ -41,6 +42,17 @@ const authMiddleware = (req, res, next) => {
     } catch (e) {
         res.status(401).json({ error: 'Invalid or expired token.' });
     }
+};
+
+
+// Role-Based Access Control (RBAC) Middleware
+const requireRole = (allowedRoles) => {
+    return (req, res, next) => {
+        if (!req.user || !req.user.role || !allowedRoles.includes(req.user.role)) {
+            return res.status(403).json({ error: 'Forbidden: You do not have permission for this action.' });
+        }
+        next();
+    };
 };
 
 // Initialize Database
@@ -186,20 +198,35 @@ app.post('/api/orders', async (req, res) => {
     const itemsJson = JSON.stringify(items);
     const timestampISO = new Date().toISOString();
 
+    // --- SECURITY: Server-Side Price Calculation ---
+    let serverTotal = 0;
+    for (let item of items) {
+        const menuItem = MENU.find(m => m.id === parseInt(item.id));
+        if (menuItem) {
+            let price = typeof menuItem.price === 'string' && menuItem.price.toLowerCase() === 'm.r.p' ? 0 : parseInt(menuItem.price);
+            if(isNaN(price)) price = 0;
+            serverTotal += price * parseInt(item.qty);
+        }
+    }
+    // Override the client's total_amount with the mathematically verified total
+    let safe_total_amount = serverTotal;
+    let safe_wUsed = wUsed;
+    // ------------------------------------------------
+
     try {
         // Validate wallet balance if user is trying to use it
-        if (wUsed > 0) {
+        if (safe_wUsed > 0) {
             const userRows = await allQuery('SELECT wallet_balance FROM users WHERE phone = ?', [phone]);
-            if (userRows.length === 0 || (userRows[0].wallet_balance || 0) < wUsed) {
-                return res.status(400).json({ error: "Insufficient wallet balance" });
-            }
+            const actualBalance = userRows.length > 0 ? (userRows[0].wallet_balance || 0) : 0;
+            // Prevent using more wallet balance than they have, or more than the order total
+            safe_wUsed = Math.min(actualBalance, safe_total_amount);
         }
 
         // Insert Order
         await runQuery(
             `INSERT INTO orders (id, phone, user_name, table_no, items, total_amount, wallet_used, payment_method, payment_status, order_status, timestamp)
              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'new', ?)`,
-            [id, phone, user_name, table_no, itemsJson, total_amount, wUsed, payment_method, payment_status || 'pending', timestampISO]
+            [id, phone, user_name, table_no, itemsJson, safe_total_amount, safe_wUsed, payment_method, payment_status || 'pending', timestampISO]
         );
 
         // Update table status to occupied
@@ -229,7 +256,7 @@ app.get('/api/orders/user/:phone', async (req, res) => {
 });
 
 // 4. Orders: Get All (Admin / Kitchen)
-app.get('/api/orders', authMiddleware, async (req, res) => {
+app.get('/api/orders', authMiddleware, requireRole(['super', 'admin', 'kitchen']), async (req, res) => {
     try {
         const rows = await allQuery('SELECT * FROM orders ORDER BY timestamp DESC');
         res.json(rows);
@@ -239,7 +266,7 @@ app.get('/api/orders', authMiddleware, async (req, res) => {
 });
 
 // 5. Orders: Update Status (Kitchen: new -> preparing -> ready | Admin: ready -> served)
-app.patch('/api/orders/:id/status', authMiddleware, async (req, res) => {
+app.patch('/api/orders/:id/status', authMiddleware, requireRole(['super', 'admin', 'kitchen']), async (req, res) => {
     const { status } = req.body;
     const { id } = req.params;
 
@@ -266,7 +293,7 @@ app.patch('/api/orders/:id/status', authMiddleware, async (req, res) => {
 });
 
 // 6. Orders: Update Payment (Admin marks Pay Later as Paid)
-app.patch('/api/orders/:id/payment', authMiddleware, async (req, res) => {
+app.patch('/api/orders/:id/payment', authMiddleware, requireRole(['super', 'admin']), async (req, res) => {
     const { payment_status } = req.body;
     const { id } = req.params;
 
@@ -520,7 +547,7 @@ app.get('/api/users', authMiddleware, async (req, res) => {
 });
 
 // 9. Admin: Reset Orders
-app.delete('/api/orders/reset', authMiddleware, async (req, res) => {
+app.delete('/api/orders/reset', authMiddleware, requireRole(['super']), async (req, res) => {
     try {
         await runQuery("TRUNCATE TABLE orders");
         await runQuery("UPDATE tables_status SET status = 'free'");
