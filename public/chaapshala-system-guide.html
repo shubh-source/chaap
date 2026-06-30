@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CHAAPSHALA - Complete System Guide</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        @page {
+            size: A4;
+            margin: 0;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            color: #1a1714;
+            background: #f5f0ea;
+            line-height: 1.7;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        /* ===== COVER PAGE ===== */
+        .cover-page {
+            width: 100%;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #2a1f1a 0%, #1a120e 60%, #0d0907 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 60px 40px;
+            position: relative;
+            overflow: hidden;
+            page-break-after: always;
+        }
+        .cover-page::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(ellipse at 50% 30%, rgba(212,170,85,0.15) 0%, transparent 70%);
+        }
+        .cover-border {
+            position: absolute;
+            top: 20px; left: 20px; right: 20px; bottom: 20px;
+            border: 2px solid rgba(212,170,85,0.3);
+            border-radius: 8px;
+        }
+        .cover-border::before {
+            content: '❖';
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #2a1f1a;
+            padding: 0 12px;
+            color: #d4aa55;
+            font-size: 18px;
+        }
+        .cover-logo {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            border: 3px solid #d4aa55;
+            padding: 10px;
+            background: rgba(255,255,255,0.1);
+            z-index: 2;
+        }
+        .cover-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            filter: brightness(0) invert(1);
+        }
+        .cover-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 56px;
+            font-weight: 800;
+            color: #faf8f5;
+            letter-spacing: 6px;
+            margin-top: 24px;
+            z-index: 2;
+        }
+        .cover-tagline {
+            font-size: 16px;
+            color: #d4aa55;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-top: 8px;
+            z-index: 2;
+        }
+        .cover-divider {
+            width: 80px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #d4aa55, transparent);
+            margin: 30px 0;
+            z-index: 2;
+        }
+        .cover-subtitle {
+            font-family: 'Poppins', sans-serif;
+            font-size: 28px;
+            color: #faf8f5;
+            font-weight: 600;
+            z-index: 2;
+        }
+        .cover-desc {
+            font-size: 14px;
+            color: rgba(250,248,245,0.6);
+            margin-top: 10px;
+            z-index: 2;
+            max-width: 500px;
+        }
+        .cover-footer {
+            position: absolute;
+            bottom: 40px;
+            z-index: 2;
+            text-align: center;
+        }
+        .cover-footer p {
+            font-size: 12px;
+            color: rgba(250,248,245,0.4);
+            letter-spacing: 1px;
+        }
+        .cover-footer .highlight {
+            color: #d4aa55;
+            font-weight: 600;
+        }
+
+        /* ===== CONTENT PAGES ===== */
+        .page {
+            width: 100%;
+            min-height: 100vh;
+            padding: 50px 60px;
+            background: #fff;
+            page-break-after: always;
+            position: relative;
+        }
+        .page::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #bc111e, #d4aa55);
+        }
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #ede8e3;
+            margin-bottom: 36px;
+        }
+        .page-header-logo {
+            font-family: 'Poppins', sans-serif;
+            font-size: 16px;
+            font-weight: 800;
+            color: #bc111e;
+            letter-spacing: 2px;
+        }
+        .page-header-section {
+            font-size: 11px;
+            color: #a09a93;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        /* Section Titles */
+        .section-number {
+            font-family: 'Poppins', sans-serif;
+            font-size: 52px;
+            font-weight: 800;
+            color: rgba(188,17,30,0.1);
+            line-height: 1;
+        }
+        .section-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 32px;
+            font-weight: 700;
+            color: #1a1714;
+            margin-top: -10px;
+            margin-bottom: 6px;
+        }
+        .section-subtitle {
+            font-size: 14px;
+            color: #a09a93;
+            font-weight: 500;
+            margin-bottom: 28px;
+        }
+
+        /* Content Blocks */
+        h3 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 20px;
+            font-weight: 700;
+            color: #1a1714;
+            margin: 28px 0 12px;
+            padding-left: 14px;
+            border-left: 3px solid #d4aa55;
+        }
+        h4 {
+            font-size: 15px;
+            font-weight: 700;
+            color: #bc111e;
+            margin: 18px 0 8px;
+        }
+        p {
+            font-size: 14px;
+            color: #4a4540;
+            margin-bottom: 12px;
+        }
+        ul {
+            padding-left: 20px;
+            margin-bottom: 14px;
+        }
+        li {
+            font-size: 13.5px;
+            color: #4a4540;
+            margin-bottom: 6px;
+        }
+        li strong { color: #1a1714; }
+
+        /* Feature Cards */
+        .features-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin: 20px 0;
+        }
+        .feature-card {
+            background: #faf8f5;
+            border: 1px solid #ede8e3;
+            border-radius: 14px;
+            padding: 20px;
+        }
+        .feature-card .icon {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+        .feature-card .title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            color: #1a1714;
+            margin-bottom: 6px;
+        }
+        .feature-card .desc {
+            font-size: 12.5px;
+            color: #6b6560;
+            line-height: 1.5;
+        }
+
+        /* Stat Strip */
+        .stat-strip {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 14px;
+            margin: 20px 0;
+        }
+        .stat-box {
+            background: linear-gradient(135deg, #2a1f1a, #1a120e);
+            border-radius: 12px;
+            padding: 18px;
+            text-align: center;
+        }
+        .stat-box .val {
+            font-family: 'Poppins', sans-serif;
+            font-size: 28px;
+            font-weight: 800;
+            color: #d4aa55;
+        }
+        .stat-box .label {
+            font-size: 10px;
+            color: rgba(250,248,245,0.6);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-top: 4px;
+            font-weight: 600;
+        }
+
+        /* Flow Steps */
+        .flow-steps {
+            display: flex;
+            align-items: flex-start;
+            gap: 0;
+            margin: 20px 0;
+        }
+        .flow-step {
+            flex: 1;
+            text-align: center;
+            position: relative;
+            padding: 0 10px;
+        }
+        .flow-step::after {
+            content: '→';
+            position: absolute;
+            right: -8px;
+            top: 16px;
+            font-size: 20px;
+            color: #d4aa55;
+            font-weight: 700;
+        }
+        .flow-step:last-child::after { display: none; }
+        .flow-dot {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #bc111e, #d4aa55);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 8px;
+            font-size: 18px;
+            color: white;
+            font-weight: 700;
+        }
+        .flow-label {
+            font-size: 11px;
+            font-weight: 700;
+            color: #1a1714;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .flow-desc {
+            font-size: 11px;
+            color: #6b6560;
+            margin-top: 4px;
+        }
+
+        /* Table Styles */
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 14px 0;
+            font-size: 13px;
+        }
+        .info-table th {
+            background: #2a1f1a;
+            color: #faf8f5;
+            padding: 10px 14px;
+            text-align: left;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 700;
+        }
+        .info-table td {
+            padding: 10px 14px;
+            border-bottom: 1px solid #ede8e3;
+            color: #4a4540;
+        }
+        .info-table tr:nth-child(even) { background: #faf8f5; }
+        .info-table .badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 10px;
+            font-weight: 700;
+        }
+        .badge-red { background: #ffe4e6; color: #bc111e; }
+        .badge-green { background: #dcfce3; color: #166534; }
+        .badge-gold { background: #fef9e7; color: #b45309; }
+        .badge-blue { background: #e0f2fe; color: #0284c7; }
+
+        /* Highlight Box */
+        .highlight-box {
+            background: linear-gradient(135deg, #fffdf7, #fef9e7);
+            border: 1px solid #d4aa55;
+            border-radius: 12px;
+            padding: 18px 22px;
+            margin: 16px 0;
+        }
+        .highlight-box .hl-title {
+            font-weight: 700;
+            color: #1a1714;
+            font-size: 14px;
+            margin-bottom: 6px;
+        }
+        .highlight-box .hl-text {
+            font-size: 13px;
+            color: #6b6560;
+        }
+
+        /* Tech Stack */
+        .tech-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 12px;
+            margin: 16px 0;
+        }
+        .tech-item {
+            background: #faf8f5;
+            border: 1px solid #ede8e3;
+            border-radius: 10px;
+            padding: 14px;
+            text-align: center;
+        }
+        .tech-item .t-name {
+            font-weight: 700;
+            font-size: 14px;
+            color: #1a1714;
+        }
+        .tech-item .t-desc {
+            font-size: 11px;
+            color: #6b6560;
+            margin-top: 3px;
+        }
+
+        /* Menu Grid */
+        .menu-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
+            margin: 14px 0;
+        }
+        .menu-cat {
+            background: #faf8f5;
+            border: 1px solid #ede8e3;
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-size: 12px;
+            color: #4a4540;
+        }
+        .menu-cat strong { color: #bc111e; }
+
+        /* Page Numbers */
+        .page-num {
+            position: absolute;
+            bottom: 30px;
+            right: 60px;
+            font-size: 11px;
+            color: #a09a93;
+            font-weight: 600;
+        }
+
+        @media print {
+            body { background: white; }
+            .page { box-shadow: none; }
+            .no-print { display: none !important; }
+        }
+
+        /* Print Button */
+        .print-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #bc111e;
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(188,17,30,0.3);
+            z-index: 100;
+            font-family: 'Inter', sans-serif;
+        }
+        .print-btn:hover { background: #9a0914; }
+    </style>
+</head>
+<body>
+
+<button class="print-btn no-print" onclick="window.print()">📄 Save as PDF</button>
+
+<!-- ===== COVER PAGE ===== -->
+<div class="cover-page">
+    <div class="cover-border"></div>
+    <div class="cover-logo">
+        <img src="logo/logo.jpg" alt="CHAAPSHALA">
+    </div>
+    <div class="cover-title">CHAAPSHALA</div>
+    <div class="cover-tagline">School of Swad</div>
+    <div class="cover-divider"></div>
+    <div class="cover-subtitle">Complete System Guide</div>
+    <div class="cover-desc">Smart Digital Restaurant Management — QR Ordering, Real-Time Kitchen Display, Admin Analytics & Automated Billing</div>
+    <div class="cover-footer">
+        <p>Station Rd, Sitapur · Opens 2 PM</p>
+        <p style="margin-top:6px;"><span class="highlight">Prepared for CHAAPSHALA Management</span></p>
+        <p style="margin-top:4px;">Version 1.0 · May 2026</p>
+    </div>
+</div>
+
+<!-- ===== PAGE 1: OVERVIEW ===== -->
+<div class="page">
+    <div class="page-header">
+        <div class="page-header-logo">CHAAPSHALA</div>
+        <div class="page-header-section">System Overview</div>
+    </div>
+
+    <div class="section-number">01</div>
+    <div class="section-title">System Overview</div>
+    <div class="section-subtitle">What is the CHAAPSHALA Digital Ordering System?</div>
+
+    <p>CHAAPSHALA Digital Ordering System ek complete smart restaurant platform hai jo aapke restaurant ko fully digital bana deta hai. Customer QR code scan karke apne phone se order karta hai, order seedha kitchen ki screen pe dikhta hai, aur admin sab kuch ek dashboard se manage karta hai — sab kuch real-time mein.</p>
+
+    <div class="stat-strip">
+        <div class="stat-box">
+            <div class="val">340+</div>
+            <div class="label">Menu Items</div>
+        </div>
+        <div class="stat-box">
+            <div class="val">31</div>
+            <div class="label">Categories</div>
+        </div>
+        <div class="stat-box">
+            <div class="val">15</div>
+            <div class="label">Tables</div>
+        </div>
+        <div class="stat-box">
+            <div class="val">24/7</div>
+            <div class="label">Uptime</div>
+        </div>
+    </div>
+
+    <h3>System ke 4 Parts</h3>
+    <div class="features-grid">
+        <div class="feature-card">
+            <div class="icon">📱</div>
+            <div class="title">Customer App</div>
+            <div class="desc">QR scan → Phone verify → Full menu browse → Cart → Online/Cash payment → Real-time order tracking</div>
+        </div>
+        <div class="feature-card">
+            <div class="icon">👨‍🍳</div>
+            <div class="title">Kitchen Display</div>
+            <div class="desc">Live order queue board → Table-wise tickets → "Start Cooking" → "Mark Ready" → Auto-update</div>
+        </div>
+        <div class="feature-card">
+            <div class="icon">📊</div>
+            <div class="title">Admin Dashboard</div>
+            <div class="desc">Revenue stats → Live orders → Table map → Customer database → Analytics charts → QR generator</div>
+        </div>
+        <div class="feature-card">
+            <div class="icon">🔐</div>
+            <div class="title">Security</div>
+            <div class="desc">JWT Authentication → GPS Geo-fencing → Razorpay HMAC verification → Encrypted cookies</div>
+        </div>
+    </div>
+
+    <h3>Kaise Kaam Karta Hai? (Complete Flow)</h3>
+    <div class="flow-steps">
+        <div class="flow-step">
+            <div class="flow-dot">1</div>
+            <div class="flow-label">QR Scan</div>
+            <div class="flow-desc">Customer table pe QR scan karta hai</div>
+        </div>
+        <div class="flow-step">
+            <div class="flow-dot">2</div>
+            <div class="flow-label">Verify</div>
+            <div class="flow-desc">Phone number se login / register</div>
+        </div>
+        <div class="flow-step">
+            <div class="flow-dot">3</div>
+            <div class="flow-label">Order</div>
+            <div class="flow-desc">Menu browse, cart, pay online ya cash</div>
+        </div>
+        <div class="flow-step">
+            <div class="flow-dot">4</div>
+            <div class="flow-label">Kitchen</div>
+            <div class="flow-desc">Instant order dikhe chef ke screen pe</div>
+        </div>
+        <div class="flow-step">
+            <div class="flow-dot">5</div>
+            <div class="flow-label">Served</div>
+            <div class="flow-desc">Chef ready kare, admin serve kare, bill auto-print</div>
+        </div>
+    </div>
+
+    <div class="page-num">01</div>
+</div>
+
+<!-- ===== PAGE 2: CUSTOMER EXPERIENCE ===== -->
+<div class="page">
+    <div class="page-header">
+        <div class="page-header-logo">CHAAPSHALA</div>
+        <div class="page-header-section">Customer Experience</div>
+    </div>
+
+    <div class="section-number">02</div>
+    <div class="section-title">Customer Experience</div>
+    <div class="section-subtitle">Customer ka QR scan se order tak ka poora safar</div>
+
+    <h3>Step 1: Welcome & Verification</h3>
+    <p>Customer jab table pe rakhay QR code ko scan karta hai, toh ek premium welcome screen dikhta hai CHAAPSHALA ki branding ke saath. Yahan pe:</p>
+    <ul>
+        <li><strong>GPS Verification:</strong> System check karta hai ki customer restaurant ke 100 meter ke andar hai ya nahi (fake orders se protection)</li>
+        <li><strong>Phone Number:</strong> Customer apna 10-digit mobile number daalata hai</li>
+        <li><strong>New Customer:</strong> Agar pehli baar aaya hai toh naam bhi maanga jaata hai</li>
+        <li><strong>Returning Customer:</strong> Agar pehle aa chuka hai toh seedha welcome message aata hai naam ke saath</li>
+    </ul>
+
+    <h3>Step 2: Menu Browsing</h3>
+    <p>Customer ko ek beautiful, restaurant-style digital menu dikhta hai — Mandap (arch) design theme ke saath.</p>
+    
+    <div class="highlight-box">
+        <div class="hl-title">📋 Menu Highlights</div>
+        <div class="hl-text">340+ items · 31 categories · Half/Full portions · 3 pizza sizes (S/M/L) · Real-time search · Category filters · Veg indicators · Dotted leader prices (like printed menus)</div>
+    </div>
+
+    <h4>Menu Categories:</h4>
+    <div class="menu-grid">
+        <div class="menu-cat"><strong>🍜</strong> Soups (7)</div>
+        <div class="menu-cat"><strong>🍳</strong> Breakfast & Snacks (26)</div>
+        <div class="menu-cat"><strong>🥪</strong> Sandwich (7)</div>
+        <div class="menu-cat"><strong>🍕</strong> Pizza (10)</div>
+        <div class="menu-cat"><strong>🍔</strong> Burger (4)</div>
+        <div class="menu-cat"><strong>🥡</strong> Chinese (8)</div>
+        <div class="menu-cat"><strong>🍝</strong> Noodles (11)</div>
+        <div class="menu-cat"><strong>🌯</strong> Franky (5)</div>
+        <div class="menu-cat"><strong>🥟</strong> Momos & Rolls (4)</div>
+        <div class="menu-cat"><strong>🧀</strong> Paneer (22)</div>
+        <div class="menu-cat"><strong>🍛</strong> Veg Curry (11)</div>
+        <div class="menu-cat"><strong>🫘</strong> Dal (6)</div>
+        <div class="menu-cat"><strong>🫓</strong> Roti & Bread (19)</div>
+        <div class="menu-cat"><strong>🍚</strong> Rice & Pulao (5)</div>
+        <div class="menu-cat"><strong>🥗</strong> Salad & Raita (13)</div>
+        <div class="menu-cat"><strong>🍽️</strong> Thali (11)</div>
+        <div class="menu-cat"><strong>🧁</strong> Sweets (18)</div>
+        <div class="menu-cat"><strong>🥤</strong> Shakes & Juices (15)</div>
+        <div class="menu-cat"><strong>🍨</strong> Ice Cream (26)</div>
+        <div class="menu-cat"><strong>🍹</strong> Mocktails (11)</div>
+        <div class="menu-cat"><strong>☕</strong> Beverages (15)</div>
+    </div>
+
+    <h3>Step 3: Cart & Payment</h3>
+    <table class="info-table">
+        <tr>
+            <th>Feature</th>
+            <th>Details</th>
+        </tr>
+        <tr>
+            <td><strong>Cart</strong></td>
+            <td>Bottom bar se open hota hai — items, quantity +/-, special instructions</td>
+        </tr>
+        <tr>
+            <td><strong>Bill Breakdown</strong></td>
+            <td>Subtotal + GST (5%) + Platform Fee (₹2) - Wallet Deduction = Total</td>
+        </tr>
+        <tr>
+            <td><strong>⚡ Online Payment</strong></td>
+            <td>Razorpay Gateway — UPI, Cards, Net Banking, Wallets sab supported</td>
+        </tr>
+        <tr>
+            <td><strong>💳 Card at Counter</strong></td>
+            <td>Order place ho jaata hai, payment counter pe card se</td>
+        </tr>
+        <tr>
+            <td><strong>💵 Cash at Counter</strong></td>
+            <td>Order place ho jaata hai, payment counter pe cash se</td>
+        </tr>
+        <tr>
+            <td><strong>💰 Wallet / Cashback</strong></td>
+            <td>5% cashback on online payment → next visit pe use kar sakte hain</td>
+        </tr>
+    </table>
+
+    <div class="page-num">02</div>
+</div>
+
+<!-- ===== PAGE 3: ADMIN DASHBOARD ===== -->
+<div class="page">
+    <div class="page-header">
+        <div class="page-header-logo">CHAAPSHALA</div>
+        <div class="page-header-section">Admin Dashboard</div>
+    </div>
+
+    <div class="section-number">03</div>
+    <div class="section-title">Admin Dashboard</div>
+    <div class="section-subtitle">Restaurant owner ke liye complete control panel</div>
+
+    <p>Admin Dashboard ek powerful control center hai jahan se restaurant ka poora operation manage hota hai — revenue, orders, tables, customers, analytics sab ek jagah.</p>
+
+    <h3>Dashboard Sections (7 Panels)</h3>
+
+    <table class="info-table">
+        <tr>
+            <th>Panel</th>
+            <th>Icon</th>
+            <th>Features</th>
+        </tr>
+        <tr>
+            <td><strong>Dashboard</strong></td>
+            <td>📊</td>
+            <td>Today's Revenue, Total Orders, Pending Payments, Occupied Tables — real-time stat cards. Plus "Needs Attention" table showing orders that need action.</td>
+        </tr>
+        <tr>
+            <td><strong>Live Orders</strong></td>
+            <td>🟢</td>
+            <td>All active orders with Status (New/Preparing/Ready/Served), Payment status, Action buttons — "Mark Served" aur "Collect Cash"</td>
+        </tr>
+        <tr>
+            <td><strong>History</strong></td>
+            <td>📋</td>
+            <td>Completed orders list. <strong>Monthly PDF Report</strong> download (jsPDF). <strong>Erase All Orders</strong> option for data reset.</td>
+        </tr>
+        <tr>
+            <td><strong>Tables</strong></td>
+            <td>🪑</td>
+            <td>15-table visual grid map — Free (grey) vs Occupied (gold highlight). Real-time status updates.</td>
+        </tr>
+        <tr>
+            <td><strong>Customers</strong></td>
+            <td>👥</td>
+            <td>Customer database — Phone, Name, Total Orders, Total Spend. Automatic tracking.</td>
+        </tr>
+        <tr>
+            <td><strong>Analytics</strong></td>
+            <td>📈</td>
+            <td>Revenue chart (7 days), Peak hours bar chart, Top 5 selling items (doughnut chart), VIP customers (top spenders) with 👑</td>
+        </tr>
+        <tr>
+            <td><strong>QR Codes</strong></td>
+            <td>📱</td>
+            <td>Generate unique QR codes for each table. Preview on screen. <strong>Print all QRs</strong> for table placement.</td>
+        </tr>
+    </table>
+
+    <h3>Auto Bill Printing 🖨️</h3>
+    <div class="highlight-box">
+        <div class="hl-title">Automatic Thermal Bill Print</div>
+        <div class="hl-text">Jab bhi koi order PAID hota hai, system automatically thermal receipt style bill print kar deta hai — Order ID, Table, Customer details, Itemized list, Total, Payment method sab included. Duplicate printing ka protection bhi hai.</div>
+    </div>
+
+    <h3>Monthly PDF Reports 📄</h3>
+    <p>Admin History section mein month select karke ek professional PDF report download kar sakta hai jisme:</p>
+    <ul>
+        <li>CHAAPSHALA header with month name</li>
+        <li>Total completed orders count</li>
+        <li>Total revenue for that month</li>
+        <li>Complete order table — ID, Date, Table, Items, Payment Method, Amount</li>
+    </ul>
+
+    <div class="page-num">03</div>
+</div>
+
+<!-- ===== PAGE 4: KITCHEN DISPLAY ===== -->
+<div class="page">
+    <div class="page-header">
+        <div class="page-header-logo">CHAAPSHALA</div>
+        <div class="page-header-section">Kitchen & Security</div>
+    </div>
+
+    <div class="section-number">04</div>
+    <div class="section-title">Kitchen Display System</div>
+    <div class="section-subtitle">Chef ke liye live order queue board</div>
+
+    <p>Kitchen Display ek dark-themed, large-font screen hai jo kitchen mein tablet ya monitor pe chalti hai. Jaise hi customer order karta hai, order ticket instantly yahaan dikh jaata hai.</p>
+
+    <h3>Order Ticket Flow</h3>
+    <div class="flow-steps">
+        <div class="flow-step">
+            <div class="flow-dot" style="background: #dc2626;">🆕</div>
+            <div class="flow-label">New Order</div>
+            <div class="flow-desc">Order aata hai, red ticket dikhta hai</div>
+        </div>
+        <div class="flow-step">
+            <div class="flow-dot" style="background: #d4aa55;">🍳</div>
+            <div class="flow-label">Start Cooking</div>
+            <div class="flow-desc">Chef "Start Cooking" press karta hai</div>
+        </div>
+        <div class="flow-step">
+            <div class="flow-dot" style="background: #16a34a;">✅</div>
+            <div class="flow-label">Mark Ready</div>
+            <div class="flow-desc">Chef "Mark Ready" karta hai, ticket hat jaata hai</div>
+        </div>
+        <div class="flow-step">
+            <div class="flow-dot" style="background: #0284c7;">🍽️</div>
+            <div class="flow-label">Served</div>
+            <div class="flow-desc">Admin "Mark Served" karta hai apne panel se</div>
+        </div>
+    </div>
+
+    <h4>Each Ticket Shows:</h4>
+    <ul>
+        <li><strong>Table Number</strong> — Large gold text mein</li>
+        <li><strong>Order Time</strong> — Kitne der pehle aaya</li>
+        <li><strong>Items List</strong> — Har item ka naam, quantity (2x), size (Half/Full)</li>
+        <li><strong>Status</strong> — NEW ya PREPARING</li>
+        <li><strong>Action Button</strong> — "Start Cooking" ya "Mark Ready"</li>
+    </ul>
+
+    <h3>Kitchen History</h3>
+    <p>Chef date-wise completed orders bhi dekh sakta hai — date picker se filter karke kaunse orders kab ready hue, sab dikh jaata hai.</p>
+
+    <div style="margin-top: 40px;"></div>
+
+    <div class="section-number">05</div>
+    <div class="section-title">Security Features</div>
+    <div class="section-subtitle">Restaurant ki data aur payment security</div>
+
+    <div class="features-grid">
+        <div class="feature-card">
+            <div class="icon">🔐</div>
+            <div class="title">JWT Authentication</div>
+            <div class="desc">Admin aur Kitchen login httpOnly cookies mein JWT token store karta hai — 12 hour expiry, browser close pe session khatam.</div>
+        </div>
+        <div class="feature-card">
+            <div class="icon">📍</div>
+            <div class="title">GPS Geo-Fencing</div>
+            <div class="desc">Customer tabhi order kar sakta hai jab wo restaurant ke 100 meter ke andar ho. Haversine formula se distance calculate hota hai. Fake orders blocked.</div>
+        </div>
+        <div class="feature-card">
+            <div class="icon">💳</div>
+            <div class="title">Razorpay HMAC Verification</div>
+            <div class="desc">Online payments HMAC-SHA256 cryptographic signature se verify hoti hain. Tamper-proof payment confirmation.</div>
+        </div>
+        <div class="feature-card">
+            <div class="icon">🛡️</div>
+            <div class="title">Environment Variables</div>
+            <div class="desc">Saari API keys, passwords, database credentials .env file mein secure hain — code mein koi bhi secret hardcoded nahi hai.</div>
+        </div>
+    </div>
+
+    <h3>Login Credentials (3 Roles)</h3>
+    <table class="info-table">
+        <tr>
+            <th>Role</th>
+            <th>Login URL</th>
+            <th>Access</th>
+        </tr>
+        <tr>
+            <td><strong>Admin</strong> (Restaurant Owner)</td>
+            <td>/welcome-admin.html</td>
+            <td>Full dashboard, orders, analytics, QR codes, billing</td>
+        </tr>
+        <tr>
+            <td><strong>Kitchen</strong> (Chef / Staff)</td>
+            <td>/welcome-kitchen.html</td>
+            <td>Kitchen order queue board only</td>
+        </tr>
+        <tr>
+            <td><strong>Super Admin</strong> (Platform)</td>
+            <td>/superadmin.html</td>
+            <td>Platform-level revenue & stats</td>
+        </tr>
+    </table>
+
+    <div class="page-num">04</div>
+</div>
+
+<!-- ===== PAGE 5: TECH STACK & WALLET ===== -->
+<div class="page">
+    <div class="page-header">
+        <div class="page-header-logo">CHAAPSHALA</div>
+        <div class="page-header-section">Technology & Features</div>
+    </div>
+
+    <div class="section-number">06</div>
+    <div class="section-title">Technology Stack</div>
+    <div class="section-subtitle">System kaunsi technologies pe bana hai</div>
+
+    <div class="tech-grid">
+        <div class="tech-item">
+            <div class="t-name">Node.js + Express</div>
+            <div class="t-desc">Backend Server</div>
+        </div>
+        <div class="tech-item">
+            <div class="t-name">PostgreSQL</div>
+            <div class="t-desc">Database</div>
+        </div>
+        <div class="tech-item">
+            <div class="t-name">Socket.io</div>
+            <div class="t-desc">Real-time Updates</div>
+        </div>
+        <div class="tech-item">
+            <div class="t-name">Razorpay</div>
+            <div class="t-desc">Payment Gateway</div>
+        </div>
+        <div class="tech-item">
+            <div class="t-name">JWT + Cookies</div>
+            <div class="t-desc">Authentication</div>
+        </div>
+        <div class="tech-item">
+            <div class="t-name">Chart.js</div>
+            <div class="t-desc">Analytics Charts</div>
+        </div>
+        <div class="tech-item">
+            <div class="t-name">jsPDF</div>
+            <div class="t-desc">PDF Reports</div>
+        </div>
+        <div class="tech-item">
+            <div class="t-name">QRCode.js</div>
+            <div class="t-desc">QR Code Generator</div>
+        </div>
+        <div class="tech-item">
+            <div class="t-name">HTML/CSS/JS</div>
+            <div class="t-desc">Frontend UI</div>
+        </div>
+    </div>
+
+    <div style="margin-top: 30px;"></div>
+
+    <div class="section-number">07</div>
+    <div class="section-title">Wallet & Cashback System</div>
+    <div class="section-subtitle">Customer loyalty program — repeat visits ka secret</div>
+
+    <div class="highlight-box">
+        <div class="hl-title">💰 5% Cashback on Every Online Payment</div>
+        <div class="hl-text">Jab bhi customer online pay karta hai (UPI/Card/Wallet), uske account mein 5% cashback credit hota hai. Ye cashback next visit pe bill se kat jaata hai. Isse customers baar baar aate hain!</div>
+    </div>
+
+    <h4>Wallet Flow:</h4>
+    <ul>
+        <li><strong>Earn:</strong> Customer ₹500 ka order online pay karta hai → ₹25 wallet mein aata hai</li>
+        <li><strong>View:</strong> Customer ke menu screen pe 💳 ₹25 wallet balance dikhta hai</li>
+        <li><strong>Use:</strong> Next order mein checkout pe "Use Wallet" toggle → bill se ₹25 kat jaata hai</li>
+        <li><strong>Stack:</strong> Multiple visits ka cashback accumulate hota hai</li>
+    </ul>
+
+    <div style="margin-top: 30px;"></div>
+
+    <div class="section-number">08</div>
+    <div class="section-title">Real-Time Features</div>
+    <div class="section-subtitle">Socket.io powered instant updates — zero page refresh</div>
+
+    <table class="info-table">
+        <tr>
+            <th>Event</th>
+            <th>Kya Hota Hai</th>
+            <th>Kaun Dekhta Hai</th>
+        </tr>
+        <tr>
+            <td><strong>Order Placed</strong></td>
+            <td>Customer ne order kiya</td>
+            <td>Kitchen screen pe ticket aata hai instantly, Admin dashboard update hota hai</td>
+        </tr>
+        <tr>
+            <td><strong>Status Change</strong></td>
+            <td>Chef ne "Start Cooking" ya "Ready" kiya</td>
+            <td>Admin dashboard pe status badge update, Customer ke order history mein bhi</td>
+        </tr>
+        <tr>
+            <td><strong>Payment Done</strong></td>
+            <td>Admin ne cash collect kiya ya online payment aayi</td>
+            <td>Admin stats update, Auto bill print, Table freed (agar served bhi ho)</td>
+        </tr>
+        <tr>
+            <td><strong>Table Update</strong></td>
+            <td>Table occupied ya free hua</td>
+            <td>Admin table map pe instant color change</td>
+        </tr>
+    </table>
+
+    <div class="page-num">05</div>
+</div>
+
+<!-- ===== PAGE 6: BILLING & SETUP ===== -->
+<div class="page">
+    <div class="page-header">
+        <div class="page-header-logo">CHAAPSHALA</div>
+        <div class="page-header-section">Billing & Setup</div>
+    </div>
+
+    <div class="section-number">09</div>
+    <div class="section-title">Billing Structure</div>
+    <div class="section-subtitle">Customer ke bill mein kya kya charges lagte hain</div>
+
+    <table class="info-table">
+        <tr>
+            <th>Component</th>
+            <th>Calculation</th>
+            <th>Example (₹500 order)</th>
+        </tr>
+        <tr>
+            <td><strong>Subtotal</strong></td>
+            <td>Items × Quantity ka total</td>
+            <td>₹500</td>
+        </tr>
+        <tr>
+            <td><strong>GST</strong></td>
+            <td>5% of Subtotal</td>
+            <td>₹25</td>
+        </tr>
+        <tr>
+            <td><strong>Platform/Tech Fee</strong></td>
+            <td>Fixed ₹2 per order</td>
+            <td>₹2</td>
+        </tr>
+        <tr>
+            <td><strong>Wallet Deduction</strong></td>
+            <td>Optional — customer's choice</td>
+            <td>-₹25 (if available)</td>
+        </tr>
+        <tr>
+            <td style="background: #fffdf7;"><strong>Total Payable</strong></td>
+            <td style="background: #fffdf7;"><strong>Subtotal + GST + Fee - Wallet</strong></td>
+            <td style="background: #fffdf7;"><strong>₹502</strong></td>
+        </tr>
+        <tr>
+            <td style="color: #16a34a;"><strong>Cashback Earned (Online)</strong></td>
+            <td style="color: #16a34a;">5% of Total (rounded down)</td>
+            <td style="color: #16a34a;">₹25 → Wallet mein</td>
+        </tr>
+    </table>
+
+    <div style="margin-top: 35px;"></div>
+
+    <div class="section-number">10</div>
+    <div class="section-title">Setup Guide</div>
+    <div class="section-subtitle">System chalane ke liye kya chahiye</div>
+
+    <h3>Requirements</h3>
+    <ul>
+        <li><strong>Server:</strong> Node.js installed machine (VPS, local PC, ya cloud)</li>
+        <li><strong>Database:</strong> PostgreSQL database (free tier available)</li>
+        <li><strong>Payment:</strong> Razorpay account (test/live keys)</li>
+        <li><strong>WiFi:</strong> Restaurant mein stable internet connection</li>
+        <li><strong>Devices:</strong> Kitchen mein ek tablet/monitor, Admin ke liye laptop/PC</li>
+    </ul>
+
+    <h3>Quick Start Steps</h3>
+    <table class="info-table">
+        <tr><th>#</th><th>Step</th><th>Command / Action</th></tr>
+        <tr><td>1</td><td>Code download karo</td><td><code>git clone https://github.com/shubh-source/chaapshala-order.git</code></td></tr>
+        <tr><td>2</td><td>Dependencies install karo</td><td><code>npm install</code></td></tr>
+        <tr><td>3</td><td>Environment file setup</td><td><code>.env.example</code> ko copy karke <code>.env</code> banao, credentials daalo</td></tr>
+        <tr><td>4</td><td>Database setup</td><td>PostgreSQL mein database create karo, URL .env mein daalo</td></tr>
+        <tr><td>5</td><td>Server start karo</td><td><code>node server.js</code></td></tr>
+        <tr><td>6</td><td>QR codes print karo</td><td>Admin panel → QR Codes → Generate → Print</td></tr>
+        <tr><td>7</td><td>Kitchen display kholo</td><td>Kitchen tablet pe <code>/welcome-kitchen.html</code> kholo</td></tr>
+    </table>
+
+    <h3>Environment Variables</h3>
+    <table class="info-table">
+        <tr><th>Variable</th><th>Purpose</th></tr>
+        <tr><td><code>RAZORPAY_KEY_ID</code></td><td>Razorpay public key</td></tr>
+        <tr><td><code>RAZORPAY_KEY_SECRET</code></td><td>Razorpay secret key</td></tr>
+        <tr><td><code>JWT_SECRET</code></td><td>JWT token encryption key</td></tr>
+        <tr><td><code>DATABASE_URL</code></td><td>PostgreSQL connection string</td></tr>
+        <tr><td><code>ADMIN_USER / ADMIN_PASS</code></td><td>Admin login credentials</td></tr>
+        <tr><td><code>KITCHEN_USER / KITCHEN_PASS</code></td><td>Kitchen login credentials</td></tr>
+        <tr><td><code>PORT</code></td><td>Server port (default 3000)</td></tr>
+    </table>
+
+    <div class="page-num">06</div>
+</div>
+
+<!-- ===== PAGE 7: SUMMARY ===== -->
+<div class="page" style="display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+    <div class="page-header" style="position: absolute; top: 50px; left: 60px; right: 60px;">
+        <div class="page-header-logo">CHAAPSHALA</div>
+        <div class="page-header-section">Summary</div>
+    </div>
+
+    <div style="max-width: 500px;">
+        <div style="font-size: 48px; margin-bottom: 16px;">🏛️</div>
+        <div class="section-title" style="margin-top: 0;">System Summary</div>
+        <p style="font-size: 16px; color: #6b6560; margin: 20px 0 30px;">CHAAPSHALA Digital Ordering System — ek complete, secure, real-time restaurant management platform.</p>
+    </div>
+
+    <div class="stat-strip" style="max-width: 600px; width: 100%;">
+        <div class="stat-box">
+            <div class="val">4</div>
+            <div class="label">Panels</div>
+        </div>
+        <div class="stat-box">
+            <div class="val">16</div>
+            <div class="label">API Routes</div>
+        </div>
+        <div class="stat-box">
+            <div class="val">3</div>
+            <div class="label">Payment Modes</div>
+        </div>
+        <div class="stat-box">
+            <div class="val">∞</div>
+            <div class="label">Real-time</div>
+        </div>
+    </div>
+
+    <div style="max-width: 480px; margin-top: 40px; text-align: center;">
+        <div style="font-family: 'Poppins', sans-serif; font-size: 20px; color: #1a1714; font-weight: 700; margin-bottom: 12px;">Key Benefits</div>
+        <ul style="text-align: left; list-style: none; padding: 0;">
+            <li style="padding: 8px 0; border-bottom: 1px solid #ede8e3; font-size: 14px;">✅ <strong>No Waiter Needed</strong> — Customer khud order karta hai QR se</li>
+            <li style="padding: 8px 0; border-bottom: 1px solid #ede8e3; font-size: 14px;">✅ <strong>Zero Order Mistakes</strong> — Digital order seedha kitchen mein</li>
+            <li style="padding: 8px 0; border-bottom: 1px solid #ede8e3; font-size: 14px;">✅ <strong>Faster Service</strong> — Real-time order flow, no delays</li>
+            <li style="padding: 8px 0; border-bottom: 1px solid #ede8e3; font-size: 14px;">✅ <strong>Complete Analytics</strong> — Revenue, peak hours, top items, VIP customers</li>
+            <li style="padding: 8px 0; border-bottom: 1px solid #ede8e3; font-size: 14px;">✅ <strong>Customer Loyalty</strong> — Wallet cashback system = repeat customers</li>
+            <li style="padding: 8px 0; font-size: 14px;">✅ <strong>Fake Order Protection</strong> — GPS verification ensures real customers only</li>
+        </ul>
+    </div>
+
+    <div style="margin-top: 50px; text-align: center;">
+        <div style="font-family: 'Poppins', sans-serif; font-size: 36px; font-weight: 800; color: #bc111e; letter-spacing: 4px;">CHAAPSHALA</div>
+        <div style="font-size: 12px; color: #d4aa55; letter-spacing: 2px; text-transform: uppercase; font-weight: 600;">School of Swad</div>
+        <div style="font-size: 12px; color: #a09a93; margin-top: 8px;">Station Rd, Sitapur · Opens 2 PM</div>
+        <div style="font-size: 11px; color: #ccc; margin-top: 16px;">© 2026 CHAAPSHALA. All rights reserved.</div>
+    </div>
+
+    <div class="page-num">07</div>
+</div>
+
+</body>
+</html>

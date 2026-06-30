@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login | CHAAPSHALA - School of Swad</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700;800&display=swap');
+
+        :root {
+      --white: #ffffff;
+      --bg: #f0ede9;
+      --card: #ffffff;
+      --border: #e4e7e1;
+      --border2: #cfd4cc;
+      --text: #1e3426;
+      --text2: #4a5c50;
+      --text3: #8a968f;
+      --accent: #345b42;
+      --accent2: #1e3426;
+      --gold: #1e3426;
+      --gold-bg: #ffb700;
+      --gold-border: #e5a400;
+      --green: #ffb700;
+      --green-bg: #345b42;
+      --green-border: #1e3426;
+      --radius: 16px;
+      --radius-sm: 10px;
+      --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            overflow: hidden;
+        }
+
+        /* Left Side - Visual Panel */
+        .visual-panel {
+            flex: 1;
+            background: var(--bg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .visual-panel::before {
+            content: '';
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(212,170,85,0.1), transparent 70%);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation: breathe 4s ease-in-out infinite;
+        }
+
+        @keyframes breathe {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.6; }
+            50% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
+        }
+
+        .visual-content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+        }
+
+        .v-logo {
+            width: 100px;
+            height: 100px;
+            border-radius: 16px;
+            overflow: hidden;
+            margin: 0 auto 28px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+            border: 2px solid var(--white);
+            animation: logoFloat 3s ease-in-out infinite;
+            background: var(--white);
+        }
+
+        @keyframes logoFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        .v-logo img { width: 100%; height: 100%; object-fit: contain; }
+
+        .v-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 34px;
+            font-weight: 800;
+            margin-bottom: 8px;
+            color: var(--accent);
+            letter-spacing: 1px;
+        }
+
+        .v-subtitle {
+            font-size: 13px;
+            color: var(--gold);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 48px;
+        }
+
+        /* Stats Row */
+        .stats-row {
+            display: flex;
+            gap: 40px;
+            animation: fadeIn 2s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .stat { text-align: center; }
+
+        .stat-num {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--text);
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: var(--text3);
+            margin-top: 6px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Grid lines decoration */
+        .grid-bg {
+            position: absolute;
+            inset: 0;
+            background-image: 
+                linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+
+        /* Right Side - Login Form */
+        .login-panel {
+            width: 480px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 60px;
+            background: var(--card);
+            border-left: 1px solid var(--border);
+            position: relative;
+            box-shadow: -10px 0 30px rgba(0,0,0,0.03);
+            z-index: 5;
+        }
+
+        .login-panel::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at top right, rgba(212,170,85,0.05), transparent 60%);
+            pointer-events: none;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 40px;
+            width: 100%;
+        }
+
+        .login-badge {
+            display: inline-block;
+            padding: 6px 16px;
+            background: var(--gold-bg);
+            border: 1px solid var(--gold-border);
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--gold);
+            margin-bottom: 20px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .login-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 8px;
+            color: var(--text);
+        }
+
+        .login-desc {
+            font-size: 14px;
+            color: var(--text2);
+        }
+
+        /* Floating Label Form */
+        .form-group {
+            width: 100%;
+            margin-bottom: 24px;
+            position: relative;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 24px 18px 12px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            color: var(--text);
+            font-size: 15px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .form-label {
+            position: absolute;
+            left: 18px;
+            top: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text3);
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            pointer-events: none;
+        }
+
+        .form-input:focus,
+        .form-input:not(:placeholder-shown) {
+            border-color: var(--gold);
+            background: var(--white);
+            box-shadow: 0 4px 12px rgba(212,170,85,0.1);
+        }
+
+        .form-input:focus + .form-label,
+        .form-input:not(:placeholder-shown) + .form-label {
+            top: 8px;
+            font-size: 10px;
+            color: var(--gold);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 700;
+        }
+
+        .form-input::placeholder { color: transparent; }
+
+        .login-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 700;
+            font-family: 'Poppins', sans-serif;
+            cursor: pointer;
+            margin-top: 12px;
+            transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+            box-shadow: 0 6px 16px rgba(188,17,30,0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-btn:hover {
+            box-shadow: 0 10px 24px rgba(188,17,30,0.3);
+            transform: translateY(-2px);
+        }
+
+        .login-btn:active {
+            transform: translateY(1px);
+        }
+
+        .login-footer {
+            margin-top: 32px;
+            text-align: center;
+            font-size: 12px;
+            color: var(--text3);
+            font-weight: 500;
+        }
+
+        .login-footer span { 
+            color: var(--gold);
+            font-weight: 700;
+        }
+
+        /* Error Message */
+        .error-msg {
+            display: none;
+            color: var(--accent);
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 16px;
+            text-align: center;
+            padding: 12px;
+            background: rgba(188,17,30,0.06);
+            border: 1px solid rgba(188,17,30,0.1);
+            border-radius: 8px;
+        }
+
+        /* Step Views */
+        .step-view {
+            display: none;
+            width: 100%;
+            height: 100vh;
+        }
+        .step-view.active {
+            display: flex;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        #step-1 {
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg);
+            position: relative;
+            z-index: 10;
+        }
+
+        .welcome-logo {
+            width: 140px;
+            height: 140px;
+            margin: 0 auto 32px;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            border: 4px solid var(--white);
+            position: relative;
+            z-index: 2;
+            background: var(--white);
+        }
+        .welcome-logo img { width: 100%; height: 100%; object-fit: contain; }
+
+        .admin-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 36px;
+            font-weight: 800;
+            color: var(--text);
+            margin-bottom: 12px;
+            position: relative;
+            z-index: 2;
+        }
+        .admin-desc {
+            font-size: 15px;
+            color: var(--text2);
+            position: relative;
+            z-index: 2;
+            font-weight: 500;
+        }
+
+        .fade-out-anim {
+            animation: fadeOut 0.8s ease-in forwards !important;
+        }
+        @keyframes fadeOut {
+            from { opacity: 1; filter: blur(0); }
+            to { opacity: 0; filter: blur(10px); transform: scale(1.05); }
+        }
+
+        /* Live indicator */
+        .live-strip {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 40px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text3);
+            position: relative;
+            z-index: 2;
+        }
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--accent);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.4); }
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 900px) {
+            #step-2 { flex-direction: column; }
+            .visual-panel {
+                min-height: 35vh;
+                padding: 40px 20px;
+                width: 100%;
+            }
+            .login-panel {
+                width: 100%;
+                padding: 36px 28px;
+                flex: 1;
+            }
+            .stats-row { gap: 28px; }
+            .v-title { font-size: 24px; }
+        }
+    </style>
+</head>
+<body>
+    <!-- STEP 1: Welcome -->
+    <div id="step-1" class="step-view active">
+        <!-- Reusing the visual panel animated background for step 1 too -->
+        <div class="visual-panel" style="position: absolute; inset: 0; width: 100%; height: 100%;">
+            <div class="grid-bg"></div>
+        </div>
+        
+        <div class="welcome-logo">
+            <img src="logo/logo.jpg" alt="CHAAPSHALA">
+        </div>
+        <div class="admin-title">Welcome, Admin 👑</div>
+        <div class="admin-desc">Initializing restaurant management system...</div>
+        
+        <div class="live-strip">
+            <div class="live-dot"></div>
+            <span>Securing connection</span>
+        </div>
+    </div>
+
+    <!-- STEP 2: Login -->
+    <div id="step-2" class="step-view">
+        <!-- Left Visual Panel -->
+        <div class="visual-panel">
+            <div class="grid-bg"></div>
+            <div class="visual-content">
+                <div class="v-logo">
+                    <img src="logo/logo.jpg" alt="Logo">
+                </div>
+                <div class="v-title">CHAAPSHALA</div>
+                <div class="v-subtitle">Restaurant Management System</div>
+
+                <div class="stats-row">
+                    <div class="stat">
+                        <div class="stat-num">24/7</div>
+                        <div class="stat-label">Uptime</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-num">Live</div>
+                        <div class="stat-label">Real-time Orders</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-num">100%</div>
+                        <div class="stat-label">Secure</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Login Panel -->
+        <div class="login-panel">
+            <div class="login-header">
+                <div class="login-badge">🔐 Admin Portal</div>
+                <div class="login-title">Welcome Back, Owner</div>
+                <div class="login-desc">Sign in to manage your restaurant</div>
+            </div>
+
+            <div class="form-group">
+                <input type="text" class="form-input" id="admin-user" placeholder=" " autocomplete="off">
+                <label class="form-label">Username</label>
+            </div>
+
+            <div class="form-group">
+                <input type="password" class="form-input" id="admin-pass" placeholder=" ">
+                <label class="form-label">Password</label>
+            </div>
+
+            <button class="login-btn" onclick="doAdminLogin()">
+                Sign In to Dashboard →
+            </button>
+
+            <div class="error-msg" id="err-msg">Invalid credentials. Please try again.</div>
+
+            <div class="login-footer">
+                Secured by <span>JWT Authentication</span> · Session protected
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Auto transition from welcome to login
+        window.onload = () => {
+            setTimeout(() => {
+                const step1 = document.getElementById('step-1');
+                step1.classList.add('fade-out-anim');
+                
+                setTimeout(() => {
+                    step1.classList.remove('active');
+                    document.getElementById('step-2').classList.add('active');
+                }, 750);
+            }, 2500);
+        };
+
+        // Enter key support
+        document.getElementById('admin-pass').addEventListener('keyup', function(e) {
+            if (e.key === 'Enter') doAdminLogin();
+        });
+
+        async function doAdminLogin() {
+            const user = document.getElementById('admin-user').value.trim();
+            const pass = document.getElementById('admin-pass').value.trim();
+            if (!user || !pass) return;
+
+            try {
+                const res = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ role: 'admin', user, pass })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    window.location.href = '/admin.html';
+                } else {
+                    document.getElementById('err-msg').style.display = 'block';
+                    setTimeout(() => document.getElementById('err-msg').style.display = 'none', 3000);
+                }
+            } catch (e) {
+                alert('Server not reachable. Please try again.');
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,546 @@
+process.env.TZ = 'Asia/Kolkata';
+require('dotenv').config();
+const express = require('express');
+const { Pool } = require('pg');
+const http = require('http');
+const { Server } = require('socket.io');
+const cors = require('cors');
+const path = require('path');
+const Razorpay = require('razorpay');
+const crypto = require('crypto');
+const jwt = require('jsonwebtoken');
+const cookieParser = require('cookie-parser');
+const rateLimit = require('express-rate-limit');
+
+const app = express();
+const server = http.createServer(app);
+const io = new Server(server, { cors: { origin: '*' } });
+
+app.use(cors());
+app.use(express.json());
+app.use(cookieParser());
+app.use(express.static(path.join(__dirname, 'public')));
+
+const RAZORPAY_KEY_ID = process.env.RAZORPAY_KEY_ID;
+const RAZORPAY_KEY_SECRET = process.env.RAZORPAY_KEY_SECRET;
+const JWT_SECRET = process.env.JWT_SECRET;
+
+const razorpay = new Razorpay({
+    key_id: RAZORPAY_KEY_ID,
+    key_secret: RAZORPAY_KEY_SECRET
+});
+
+// Auth Middleware
+const authMiddleware = (req, res, next) => {
+    const token = req.cookies.auth_token;
+    if (!token) return res.status(401).json({ error: 'Unauthorized. Please login.' });
+    try {
+        const decoded = jwt.verify(token, JWT_SECRET);
+        req.user = decoded;
+        next();
+    } catch (e) {
+        res.status(401).json({ error: 'Invalid or expired token.' });
+    }
+};
+
+// Initialize Database
+const pool = new Pool({
+    connectionString: process.env.DATABASE_URL,
+    ssl: process.env.DB_SSL === 'false' ? false : { rejectUnauthorized: false }
+});
+
+pool.on('connect', (client) => {
+    client.query("SET TIME ZONE 'Asia/Kolkata'");
+});
+
+pool.connect((err) => {
+    if (err) console.error("DB connection error:", err.message);
+    else console.log('Connected to the PostgreSQL database.');
+});
+
+// Helper for sending SQLite queries that return a promise, translated for Postgres
+function convertSqliteToPg(sql) {
+    let index = 1;
+    return sql.replace(/\?/g, () => `$${index++}`);
+}
+
+const runQuery = async (sql, params = []) => {
+    const pgSql = convertSqliteToPg(sql);
+    try {
+        const result = await pool.query(pgSql, params);
+        return { lastID: null }; // Postgres doesn't easily return lastID without RETURNING clause, but our app mainly uses UUIDs
+    } catch (err) {
+        throw err;
+    }
+};
+
+const allQuery = async (sql, params = []) => {
+    const pgSql = convertSqliteToPg(sql);
+    try {
+        const { rows } = await pool.query(pgSql, params);
+        return rows;
+    } catch (err) {
+        throw err;
+    }
+};
+
+// Create tables
+(async () => {
+    try {
+        await runQuery(`CREATE TABLE IF NOT EXISTS users (
+            id SERIAL PRIMARY KEY,
+            phone TEXT UNIQUE,
+            name TEXT,
+            total_spent REAL DEFAULT 0,
+            total_orders INTEGER DEFAULT 0,
+            wallet_balance REAL DEFAULT 0,
+            created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+        )`);
+
+        await runQuery(`CREATE TABLE IF NOT EXISTS orders (
+            id TEXT PRIMARY KEY,
+            phone TEXT,
+            user_name TEXT,
+            table_no TEXT,
+            items TEXT,
+            total_amount REAL,
+            wallet_used REAL DEFAULT 0,
+            payment_method TEXT,
+            payment_status TEXT,
+            order_status TEXT,
+            timestamp TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+        )`);
+
+        await runQuery(`CREATE TABLE IF NOT EXISTS tables_status (
+            id SERIAL PRIMARY KEY,
+            table_no TEXT UNIQUE,
+            status TEXT
+        )`);
+
+        // Migrate existing columns to TIMESTAMPTZ for correct timezone handling
+        await pool.query(`ALTER TABLE orders ALTER COLUMN timestamp TYPE TIMESTAMPTZ USING timestamp AT TIME ZONE 'UTC'`).catch(() => {});
+        await pool.query(`ALTER TABLE users ALTER COLUMN created_at TYPE TIMESTAMPTZ USING created_at AT TIME ZONE 'UTC'`).catch(() => {});
+        
+        console.log("PostgreSQL tables checked/created.");
+    } catch(err) {
+        console.error("Error creating tables:", err.message);
+    }
+})();
+
+// --- API ROUTES ---
+
+// 1. Auth: Login/Signup
+
+// --- VPS Security: Rate Limiting for Login Routes ---
+const loginLimiter = rateLimit({
+  windowMs: 5 * 60 * 1000, // 5 minutes
+  max: 5, // Limit each IP to 5 login requests per 5 minutes
+  message: { error: 'Too many login attempts, please try again after 5 minutes.' }
+});
+// ----------------------------------------------------
+
+app.post('/api/auth/login', loginLimiter, async (req, res) => {
+    const { phone, name } = req.body;
+    if (!phone) return res.status(400).json({ error: 'Phone is required' });
+
+    try {
+        let rows = await allQuery('SELECT * FROM users WHERE phone = ?', [phone]);
+        if (rows.length > 0) {
+            // User exists, just log them in
+            return res.json({ success: true, user: rows[0], msg: 'Logged in successfully' });
+        } else {
+            // New user, need name
+            if (!name) return res.status(400).json({ error: 'Name is required for signup' });
+            await runQuery('INSERT INTO users (phone, name) VALUES (?, ?)', [phone, name]);
+            const newUser = await allQuery('SELECT * FROM users WHERE phone = ?', [phone]);
+            return res.json({ success: true, user: newUser[0], msg: 'Signed up successfully' });
+        }
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+// 1.b Get Config (Frontend)
+app.get('/api/config/:restaurant_id', async (req, res) => {
+    res.json({ razorpay_key_id: RAZORPAY_KEY_ID });
+});
+
+// 1.c Auth Check
+app.get('/api/auth/check', authMiddleware, (req, res) => {
+    res.json({ success: true, role: req.user.role });
+});
+
+// 2. Orders: Place Order
+app.post('/api/orders', async (req, res) => {
+    const { id, phone, user_name, table_no, items, total_amount, payment_method, payment_status, wallet_used } = req.body;
+    const wUsed = wallet_used || 0;
+
+    // Input Sanitization
+    if (!id || !phone || !table_no || !items || !Array.isArray(items) || items.length === 0) {
+        return res.status(400).json({ error: "Missing required fields or invalid items" });
+    }
+    if (!/^[0-9+\-\s()]+$/.test(phone)) {
+        return res.status(400).json({ error: "Invalid phone number format" });
+    }
+
+    const itemsJson = JSON.stringify(items);
+    const timestampISO = new Date().toISOString();
+
+    try {
+        // Validate wallet balance if user is trying to use it
+        if (wUsed > 0) {
+            const userRows = await allQuery('SELECT wallet_balance FROM users WHERE phone = ?', [phone]);
+            if (userRows.length === 0 || (userRows[0].wallet_balance || 0) < wUsed) {
+                return res.status(400).json({ error: "Insufficient wallet balance" });
+            }
+        }
+
+        // Insert Order
+        await runQuery(
+            `INSERT INTO orders (id, phone, user_name, table_no, items, total_amount, wallet_used, payment_method, payment_status, order_status, timestamp)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'new', ?)`,
+            [id, phone, user_name, table_no, itemsJson, total_amount, wUsed, payment_method, payment_status || 'pending', timestampISO]
+        );
+
+        // Update table status to occupied
+        await runQuery(`INSERT INTO tables_status (table_no, status) VALUES (?, 'occupied') ON CONFLICT (table_no) DO UPDATE SET status = EXCLUDED.status`, [table_no]);
+
+        // Fetch the inserted order
+        const newOrder = await allQuery('SELECT * FROM orders WHERE id = ?', [id]);
+
+        // Notify all clients
+        io.emit('order_update', { action: 'placed', order: newOrder[0] });
+        io.emit('table_update', { table_no, status: 'occupied' });
+
+        res.json({ success: true, order: newOrder[0] });
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+// 3. Orders: Get History (Customer)
+app.get('/api/orders/user/:phone', async (req, res) => {
+    try {
+        const rows = await allQuery('SELECT * FROM orders WHERE phone = ? ORDER BY timestamp DESC', [req.params.phone]);
+        res.json(rows);
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+// 4. Orders: Get All (Admin / Kitchen)
+app.get('/api/orders', authMiddleware, async (req, res) => {
+    try {
+        const rows = await allQuery('SELECT * FROM orders ORDER BY timestamp DESC');
+        res.json(rows);
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+// 5. Orders: Update Status (Kitchen: new -> preparing -> ready | Admin: ready -> served)
+app.patch('/api/orders/:id/status', authMiddleware, async (req, res) => {
+    const { status } = req.body;
+    const { id } = req.params;
+
+    try {
+        await runQuery('UPDATE orders SET order_status = ? WHERE id = ?', [status, id]);
+
+        const updated = await allQuery('SELECT * FROM orders WHERE id = ?', [id]);
+        if(updated.length > 0) {
+            io.emit('order_update', { action: 'status_change', order: updated[0] });
+        }
+
+        // If served, check if it's paid to potentially free up the table
+        if (status === 'served') {
+            const order = updated[0];
+            if (order.payment_status === 'paid') {
+                freeTableIfNoActiveOrders(order.table_no);
+            }
+        }
+
+        res.json({ success: true, order: updated[0] });
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+// 6. Orders: Update Payment (Admin marks Pay Later as Paid)
+app.patch('/api/orders/:id/payment', authMiddleware, async (req, res) => {
+    const { payment_status } = req.body;
+    const { id } = req.params;
+
+    try {
+        await runQuery('UPDATE orders SET payment_status = ? WHERE id = ?', [payment_status, id]);
+
+        const updated = await allQuery('SELECT * FROM orders WHERE id = ?', [id]);
+        const order = updated[0];
+
+        // Give cashback if this is marked 'paid' and it was a card or online method
+        if (payment_status === 'paid' && (order.payment_method === 'card_counter' || order.payment_method === 'online')) {
+            const cbEarned = Math.floor(order.total_amount * 0.05);
+            if (cbEarned > 0) {
+                await runQuery(`UPDATE users SET wallet_balance = wallet_balance + ? WHERE phone = ?`, [cbEarned, order.phone]);
+            }
+        }
+
+        io.emit('order_update', { action: 'payment_change', order });
+
+        // If paid and already served, free table
+        if (payment_status === 'paid') {
+            if (order.order_status === 'served') {
+                freeTableIfNoActiveOrders(order.table_no);
+            }
+        }
+
+        res.json({ success: true, order });
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+// --- RAZORPAY INTEGRATION ---
+
+// Create Order
+app.post('/api/pay/create', async (req, res) => {
+    try {
+        const { amount } = req.body;
+        const options = { amount: amount * 100, currency: 'INR', receipt: 'rx_' + Date.now() };
+        const order = await razorpay.orders.create(options);
+        res.json({ success: true, order });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Verify Payment
+app.post('/api/pay/verify', async (req, res) => {
+    const { razorpay_order_id, razorpay_payment_id, razorpay_signature, local_order_id } = req.body;
+
+    try {
+        const body = razorpay_order_id + "|" + razorpay_payment_id;
+        const expectedSignature = crypto.createHmac('sha256', RAZORPAY_KEY_SECRET)
+            .update(body.toString())
+            .digest('hex');
+
+        if (expectedSignature === razorpay_signature) {
+            await runQuery('UPDATE orders SET payment_status = ? WHERE id = ?', ['paid', local_order_id]);
+            const updated = await allQuery('SELECT * FROM orders WHERE id = ?', [local_order_id]);
+            if (updated.length > 0) {
+                const order = updated[0];
+                io.emit('order_update', { type: 'payment', order });
+                res.json({ success: true, order });
+            } else {
+                res.json({ success: true, msg: 'Order sync delayed' });
+            }
+        } else {
+            res.status(400).json({ success: false, msg: 'Invalid digital signature' });
+        }
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+app.post('/api/login', loginLimiter, async (req, res) => {
+    const { role, user, pass } = req.body;
+    
+    if (role === 'super') {
+        if (user === process.env.SUPER_USER && pass === process.env.SUPER_PASS) {
+            const token = jwt.sign({ role: 'super' }, JWT_SECRET, { expiresIn: '12h' });
+            res.cookie('auth_token', token, { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'lax' });
+            return res.json({ success: true });
+        }
+    } else if (role === 'admin') {
+        if (user === process.env.ADMIN_USER && pass === process.env.ADMIN_PASS) {
+            const token = jwt.sign({ role: 'admin' }, JWT_SECRET, { expiresIn: '12h' });
+            res.cookie('auth_token', token, { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'lax' });
+            return res.json({ success: true });
+        }
+    } else if (role === 'kitchen') {
+        if (user === process.env.KITCHEN_USER && pass === process.env.KITCHEN_PASS) {
+            const token = jwt.sign({ role: 'kitchen' }, JWT_SECRET, { expiresIn: '12h' });
+            res.cookie('auth_token', token, { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'lax' });
+            return res.json({ success: true });
+        }
+    }
+    
+    return res.json({ success: false });
+});
+
+// --- SUPER ADMIN REPORTING -- 
+app.get('/api/super-stats', async (req, res) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    
+    if (req.query.secret !== process.env.SUPER_PASS) {
+        return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    try {
+        const total = await allQuery(`SELECT COUNT(*) as count, SUM(total_amount) as gmv FROM orders WHERE payment_status = 'paid'`);
+        const today = await allQuery(`SELECT COUNT(*) as count FROM orders WHERE payment_status = 'paid' AND DATE(timestamp) = CURRENT_DATE`);
+        
+        const cAll = parseInt(total[0].count || 0);
+        const gmvAll = parseFloat(total[0].gmv || 0);
+        const cToday = parseInt(today[0].count || 0);
+        
+        res.json({
+            name: "Chaapshala", // Each backend instance should change this
+            total_orders: cAll,
+            total_gmv: gmvAll,
+            today_orders: cToday
+        });
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+// Analytics Dashboard Endpoint
+app.get('/api/analytics', authMiddleware, async (req, res) => {
+    try {
+        // 1. Last 7 Days Revenue
+        const sevenDays = await allQuery(`
+            SELECT DATE(timestamp) as date, SUM(total_amount) as revenue, COUNT(*) as orders 
+            FROM orders 
+            WHERE payment_status = 'paid' AND timestamp >= CURRENT_DATE - INTERVAL '6 days'
+            GROUP BY DATE(timestamp) 
+            ORDER BY DATE(timestamp) ASC
+        `);
+
+        // 2. Peak Hours (grouped by hour of day)
+        const peakHours = await allQuery(`
+            SELECT EXTRACT(HOUR FROM timestamp) as hour, COUNT(*) as count 
+            FROM orders 
+            WHERE payment_status = 'paid'
+            GROUP BY EXTRACT(HOUR FROM timestamp)
+            ORDER BY EXTRACT(HOUR FROM timestamp) ASC
+        `);
+
+        // 3. VIP Customers
+        const vipUsers = await allQuery(`
+            SELECT user_name as name, phone, SUM(total_amount) as total_spent, COUNT(id) as total_orders 
+            FROM orders 
+            WHERE payment_status = 'paid'
+            GROUP BY phone, user_name
+            ORDER BY total_spent DESC 
+            LIMIT 5
+        `);
+
+        // 4. Top 5 Items (process in JS since items is TEXT containing JSON)
+        const allItemsRaw = await allQuery(`SELECT items FROM orders WHERE payment_status = 'paid'`);
+        const itemCounts = {};
+        for (const row of allItemsRaw) {
+            try {
+                const parsed = JSON.parse(row.items);
+                for (const entry of parsed) {
+                    // Structure is usually { item: { name: '...', price: ... }, qty: 1, size: '...' }
+                    const name = entry.item && entry.item.name ? entry.item.name : 'Unknown Item';
+                    const qty = entry.qty || 1;
+                    const price = entry.price || (entry.item ? entry.item.price : 0);
+                    
+                    if (!itemCounts[name]) itemCounts[name] = { qty: 0, revenue: 0 };
+                    itemCounts[name].qty += qty;
+                    itemCounts[name].revenue += (qty * price);
+                }
+            } catch(e) {}
+        }
+        
+        const topItems = Object.keys(itemCounts).map(k => ({
+            name: k, 
+            qty: itemCounts[k].qty, 
+            revenue: itemCounts[k].revenue
+        })).sort((a,b) => b.qty - a.qty).slice(0, 5);
+
+        res.json({
+            success: true,
+            sevenDays,
+            peakHours,
+            vipUsers,
+            topItems
+        });
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+async function freeTableIfNoActiveOrders(table_no) {
+    // A table is active if there are any orders for this table that are NOT (served AND paid)
+    const active = await allQuery(`
+        SELECT COUNT(*) as cnt FROM orders 
+        WHERE table_no = ? AND (order_status != 'served' OR payment_status != 'paid')
+    `, [table_no]);
+
+    const cnt = parseInt(active[0].cnt || active[0]['count'] || 0);
+    if (cnt === 0) {
+        await runQuery(`UPDATE tables_status SET status = 'free' WHERE table_no = ?`, [table_no]);
+        io.emit('table_update', { table_no, status: 'free' });
+    }
+}
+
+// --- Startup: Free any stuck occupied tables ---
+setTimeout(async () => {
+    try {
+        const stuckTables = await allQuery(`SELECT DISTINCT table_no FROM tables_status WHERE status = 'occupied'`);
+        for (const t of stuckTables) {
+            await freeTableIfNoActiveOrders(t.table_no);
+        }
+        console.log('Startup table cleanup done.');
+    } catch(e) { console.error('Startup cleanup error:', e.message); }
+}, 1000);
+
+// 7. Tables: Get All
+app.get('/api/tables', authMiddleware, async (req, res) => {
+    try {
+        const rows = await allQuery('SELECT * FROM tables_status');
+        res.json(rows);
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+// 8. Users: Get All
+app.get('/api/users', authMiddleware, async (req, res) => {
+    try {
+        const rows = await allQuery('SELECT * FROM users ORDER BY created_at DESC');
+
+        // Let's also attach total spend and orders per user. We can do complex join, or fetch simple.
+        // For simplicity right now, just aggregate on DB:
+        const userStats = await allQuery(`
+            SELECT u.phone, u.name, u.created_at,
+                   COUNT(o.id) as total_orders,
+                   COALESCE(SUM(o.total_amount), 0) as total_spent
+            FROM users u
+            LEFT JOIN orders o ON u.phone = o.phone
+            GROUP BY u.phone, u.name, u.created_at
+            ORDER BY u.created_at DESC
+        `);
+        res.json(userStats);
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+// 9. Admin: Reset Orders
+app.delete('/api/orders/reset', authMiddleware, async (req, res) => {
+    try {
+        await runQuery("TRUNCATE TABLE orders");
+        await runQuery("UPDATE tables_status SET status = 'free'");
+        io.emit('order_update', { action: 'reset' });
+        io.emit('table_update', { action: 'reset' });
+        res.json({ success: true, msg: 'All orders erased.' });
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+// Socket.io standard connection log
+io.on('connection', (socket) => {
+    console.log('Client connected:', socket.id);
+    socket.on('disconnect', () => {
+        console.log('Client disconnected:', socket.id);
+    });
+});
+
+const PORT = process.env.PORT || 3000;
+server.listen(PORT, () => {
+    console.log(`Server is running on http://localhost:${PORT}`);
+});

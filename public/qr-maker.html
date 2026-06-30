@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QR Print Studio | CHAAPSHALA</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <style>
+    :root {
+      --bg: #f0ede9;
+      --card: #ffffff;
+      --border: #e4e7e1;
+      --text: #1e3426;
+      --accent: #345b42;
+      --accent2: #1e3426;
+      --gold: #ffb700;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+    body { background: var(--bg); color: var(--text); display: flex; height: 100vh; overflow: hidden; }
+
+    /* Studio Sidebar */
+    .controls { width: 350px; background: white; padding: 30px; box-shadow: 2px 0 20px rgba(0,0,0,0.05); z-index: 10; overflow-y: auto; }
+    .controls h1 { font-size: 24px; color: var(--accent2); font-weight: 800; margin-bottom: 20px; }
+    .form-group { margin-bottom: 20px; }
+    .form-group label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 8px; color: var(--accent); text-transform: uppercase; letter-spacing: 0.5px; }
+    .form-group input, .form-group select { width: 100%; padding: 12px 15px; border: 2px solid var(--border); border-radius: 10px; font-size: 15px; outline: none; transition: 0.2s; }
+    .form-group input:focus, .form-group select:focus { border-color: var(--gold); }
+    
+    .print-btn { width: 100%; background: var(--accent2); color: white; border: none; padding: 16px; border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer; transition: 0.3s; margin-top: 10px; }
+    .print-btn:hover { background: var(--gold); color: var(--accent2); transform: translateY(-2px); }
+
+    /* Preview Area */
+    .preview-container { flex: 1; padding: 40px; overflow-y: auto; display: flex; flex-direction: column; align-items: center; background: #e0ddd9; }
+    .preview-header { margin-bottom: 20px; font-weight: 600; color: #8a968f; }
+
+    /* Print Canvas */
+    #print-zone { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; width: 100%; max-width: 900px; }
+
+    /* Base Card Design */
+    .qr-card {
+        width: 260px;
+        height: auto;
+        min-height: 380px;
+        border-radius: 16px;
+        padding: 25px 15px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        text-align: center;
+        position: relative;
+    }
+
+    /* Size Previews */
+    #print-zone[data-size="paytm"] .qr-card { width: 280px; min-height: 400px; }
+    #print-zone[data-size="mini"] .qr-card { width: 220px; min-height: 320px; padding: 15px; }
+
+    /* Themes */
+    .qr-card.theme-dark { background: var(--accent2); color: white; border: 4px solid var(--gold); }
+    .qr-card.theme-dark .scan-text { color: var(--gold); }
+    .qr-card.theme-dark .table-number { background: var(--gold); color: var(--accent2); }
+    .qr-card.theme-dark .qr-wrapper { background: white; padding: 12px; border-radius: 12px; box-shadow: 0 0 0 4px rgba(255, 183, 0, 0.2); }
+
+    .qr-card.theme-light { background: #fdfbf7; color: var(--accent2); border: 4px solid var(--accent); }
+    .qr-card.theme-light .scan-text { color: var(--accent); }
+    .qr-card.theme-light .table-number { background: var(--accent); color: white; }
+    .qr-card.theme-light .qr-wrapper { background: white; padding: 12px; border-radius: 12px; box-shadow: 0 0 0 4px rgba(52, 91, 66, 0.1); border: 1px solid var(--border); }
+
+    /* Card Elements */
+    .card-logo { width: 60px; border-radius: 8px; margin-bottom: 15px; border: 2px solid var(--gold); }
+    .scan-text { font-size: 20px; font-weight: 800; letter-spacing: 1px; line-height: 1.2; margin-bottom: 15px; }
+    .qr-wrapper { display: flex; justify-content: center; align-items: center; margin-bottom: 15px; }
+    .instruction { font-size: 11px; font-weight: 600; opacity: 0.8; margin-bottom: 15px; }
+    .table-number { font-size: 16px; font-weight: 800; padding: 6px 20px; border-radius: 30px; letter-spacing: 1px; }
+
+    /* Print Styles! */
+    @media print {
+        @page { margin: 15px; size: A4 portrait; }
+        body { background: white; }
+        .controls, .preview-header { display: none !important; }
+        .preview-container { padding: 0; background: white; display: block; overflow: visible; }
+        #print-zone { max-width: 100%; gap: 15px; padding: 10px; justify-content: center; align-items: flex-start; }
+        .qr-card { box-shadow: none; break-inside: avoid; margin-bottom: 15px; }
+
+        /* Print Sizes */
+        #print-zone[data-size="paytm"] .qr-card { width: 3.8in; height: 5.6in; min-height: auto; } /* Fits perfectly inside a 4x6 Acrylic Stand */
+        #print-zone[data-size="mini"] .qr-card { width: 31%; height: auto; min-height: 280px; padding: 15px; } /* Small stickers (6 per A4 page) */
+        
+        #print-zone[data-size="mini"] .scan-text { font-size: 16px; margin-bottom: 10px; }
+        #print-zone[data-size="mini"] .table-number { font-size: 14px; padding: 5px 15px; }
+        #print-zone[data-size="mini"] .card-logo { width: 45px; }
+        #print-zone[data-size="mini"] .instruction { font-size: 9px; margin-bottom: 10px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="controls">
+    <h1>QR Print Studio</h1>
+    
+    <div class="form-group">
+      <label>Base URL</label>
+      <input type="text" id="base-url" value="http://localhost:3002">
+    </div>
+
+    <div class="form-group" style="display:flex; gap:10px;">
+      <div style="flex:1;">
+        <label>Start Table No.</label>
+        <input type="number" id="start-table" value="1" min="1">
+      </div>
+      <div style="flex:1;">
+        <label>End Table No.</label>
+        <input type="number" id="end-table" value="4" min="1">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Card Theme</label>
+      <select id="theme-select">
+        <option value="theme-dark">Premium Dark</option>
+        <option value="theme-light">Clean Beige</option>
+      </select>
+    </div>
+
+    
+
+    <button class="print-btn" onclick="window.print()">🖨️ Print QR Codes</button>
+  </div>
+
+  <div class="preview-container">
+    <div class="preview-header">Live Print Preview (A4 Paper)</div>
+    <div id="print-zone" data-size="paytm">
+      <!-- Generated Cards -->
+    </div>
+  </div>
+
+  <script>
+    const baseUrlInput = document.getElementById('base-url');
+    const startTableInput = document.getElementById('start-table');
+    const endTableInput = document.getElementById('end-table');
+    const themeSelect = document.getElementById('theme-select');
+    
+    const printZone = document.getElementById('print-zone');
+
+    baseUrlInput.value = window.location.origin;
+
+    function generateCards() {
+        printZone.innerHTML = '';
+        printZone.setAttribute('data-size', 'paytm');
+
+        const start = parseInt(startTableInput.value) || 1;
+        const end = Math.max(start, parseInt(endTableInput.value) || 1);
+        const theme = themeSelect.value;
+        const base = baseUrlInput.value.replace(/\/$/, "");
+
+        const size = 'paytm';
+        const qrSize = 140;
+
+        for(let i = start; i <= end; i++) {
+            const finalUrl = `${base}/welcome-customer.html?table=${i}`;
+            const card = document.createElement('div');
+            card.className = `qr-card ${theme}`;
+            
+            card.innerHTML = `
+                <img src="logo/logo.jpg" alt="Logo" class="card-logo">
+                <div class="scan-text">SCAN TO<br>ORDER</div>
+                <div class="qr-wrapper" id="qr-${i}"></div>
+                <div class="instruction">Point phone camera here</div>
+                <div class="table-number">TABLE ${i}</div>
+            `;
+            printZone.appendChild(card);
+
+            new QRCode(document.getElementById(`qr-${i}`), {
+                text: finalUrl,
+                width: qrSize,
+                height: qrSize,
+                colorDark : "#000000",
+                colorLight : "#ffffff",
+                correctLevel : QRCode.CorrectLevel.H
+            });
+        }
+    }
+
+    baseUrlInput.addEventListener('input', generateCards);
+    startTableInput.addEventListener('input', generateCards);
+    endTableInput.addEventListener('input', generateCards);
+    themeSelect.addEventListener('change', generateCards);
+    
+
+    setTimeout(generateCards, 100);
+  </script>
+</body>
+</html>

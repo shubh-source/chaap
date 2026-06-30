@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Franchise Dashboard | CHAAPSHALA</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root {
+      --bg: #f0ede9;
+      --card: #ffffff;
+      --border: #e4e7e1;
+      --text: #1e3426;
+      --text2: #4a5c50;
+      --text3: #8a968f;
+      --accent: #345b42;
+      --accent2: #1e3426;
+      --gold: #1e3426;
+      --gold-bg: #ffb700;
+      --gold-border: #e5a400;
+      --radius: 20px;
+      --shadow: 0 8px 30px rgba(52, 91, 66, 0.08);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Poppins', sans-serif; background: var(--bg); color: var(--text); padding-bottom: 50px; }
+    
+    .sidebar { position: fixed; top: 0; left: 0; width: 260px; height: 100vh; background: var(--accent2); color: white; padding: 30px 20px; box-shadow: 4px 0 20px rgba(0,0,0,0.1); z-index: 10; }
+    .logo-container { text-align: center; margin-bottom: 40px; }
+    .logo-container img { width: 100px; border-radius: 16px; border: 3px solid var(--gold-bg); }
+    .logo-text { font-size: 20px; font-weight: 800; color: var(--gold-bg); margin-top: 10px; letter-spacing: 1px; }
+    
+    .nav-item { padding: 15px 20px; margin-bottom: 10px; border-radius: 12px; background: rgba(255,255,255,0.05); color: white; text-decoration: none; display: block; font-weight: 600; transition: all 0.3s; border-left: 4px solid transparent; }
+    .nav-item.active { background: rgba(255,183,0,0.1); border-left-color: var(--gold-bg); color: var(--gold-bg); }
+    .nav-item:hover { background: rgba(255,183,0,0.15); transform: translateX(5px); }
+
+    .main-content { margin-left: 260px; padding: 40px; }
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; }
+    .header h1 { font-size: 32px; font-weight: 800; color: var(--accent2); }
+    .header p { color: var(--text2); font-size: 15px; font-weight: 500; }
+    .logout-btn { background: var(--gold-bg); color: var(--gold); padding: 10px 24px; border-radius: 10px; font-weight: 700; text-decoration: none; border: none; cursor: pointer; transition: 0.3s; font-family: 'Poppins';}
+    .logout-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(255,183,0,0.3); }
+
+    .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 40px; }
+    .stat-card { background: var(--card); padding: 24px; border-radius: var(--radius); box-shadow: var(--shadow); border: 1px solid var(--border); position: relative; overflow: hidden; transition: 0.3s; }
+    .stat-card:hover { transform: translateY(-5px); box-shadow: 0 12px 40px rgba(52, 91, 66, 0.12); }
+    .stat-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: var(--gold-bg); }
+    .stat-title { font-size: 13px; font-weight: 700; color: var(--text3); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
+    .stat-value { font-size: 36px; font-weight: 800; color: var(--accent2); }
+
+    .dashboard-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 30px; }
+    
+    .card { background: var(--card); border-radius: var(--radius); padding: 30px; box-shadow: var(--shadow); border: 1px solid var(--border); }
+    .card-title { font-size: 18px; font-weight: 700; color: var(--accent2); margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+    
+    .list-item { display: flex; justify-content: space-between; align-items: center; padding: 16px 0; border-bottom: 1px dashed var(--border); }
+    .list-item:last-child { border-bottom: none; padding-bottom: 0; }
+    .item-name { font-weight: 600; color: var(--text); font-size: 15px; }
+    .item-sub { font-size: 12px; color: var(--text3); font-weight: 500; }
+    .item-value { font-weight: 700; color: var(--accent); background: rgba(52,91,66,0.1); padding: 4px 12px; border-radius: 20px; font-size: 14px; }
+    .item-value-gold { font-weight: 700; color: var(--gold); background: var(--gold-bg); padding: 4px 12px; border-radius: 20px; font-size: 14px; }
+
+    /* Login Overlay */
+    #login-overlay { position: fixed; inset: 0; background: var(--bg); z-index: 99999; display: flex; align-items: center; justify-content: center; }
+    .login-box { background: white; padding: 40px; border-radius: 24px; width: 100%; max-width: 400px; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.1); border: 1px solid var(--border); }
+    .login-box h2 { color: var(--accent2); margin-bottom: 8px; font-weight: 800; font-size: 28px; }
+    .login-box p { color: var(--text3); margin-bottom: 30px; font-size: 14px; }
+    .login-box input { width: 100%; padding: 16px; margin-bottom: 16px; border: 2px solid var(--border); border-radius: 12px; font-family: 'Poppins'; font-size: 15px; outline: none; transition: 0.3s; }
+    .login-box input:focus { border-color: var(--gold-bg); box-shadow: 0 0 0 4px rgba(255,183,0,0.1); }
+    .login-box button { width: 100%; padding: 16px; background: var(--accent2); color: white; border: none; border-radius: 12px; font-weight: 700; font-size: 16px; cursor: pointer; transition: 0.3s; font-family: 'Poppins'; }
+    .login-box button:hover { background: var(--gold-bg); color: var(--gold); transform: translateY(-2px); }
+    .err-msg { display: none; color: #e53935; font-size: 13px; font-weight: 600; margin-top: 15px; }
+
+    .loader { display: inline-block; width: 30px; height: 30px; border: 3px solid rgba(52,91,66,0.1); border-radius: 50%; border-top-color: var(--accent); animation: spin 1s ease-in-out infinite; margin: 40px auto; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    @media (max-width: 1024px) {
+      .sidebar { width: 80px; padding: 20px 10px; }
+      .logo-text, .nav-item span { display: none; }
+      .logo-container img { width: 50px; }
+      .main-content { margin-left: 80px; }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .dashboard-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Login Protection -->
+  <div id="login-overlay">
+    <div class="login-box">
+      <img src="logo/logo.jpg" alt="Logo" style="width: 80px; border-radius: 16px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+      <h2>Owner Access</h2>
+      <p>Secure Franchise Dashboard</p>
+      <input type="text" id="l-user" placeholder="Username">
+      <input type="password" id="l-pass" placeholder="Password">
+      <button onclick="doLogin()">Enter Dashboard</button>
+      <div id="l-err" class="err-msg">Invalid credentials!</div>
+    </div>
+  </div>
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="logo-container">
+      <img src="logo/logo.jpg" alt="Chaapshala">
+      <div class="logo-text">CHAAPSHALA</div>
+    </div>
+    <a href="#" class="nav-item active"><span>📊 Analytics</span></a>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <div class="header">
+      <div>
+        <h1>Franchise Overview</h1>
+        <p>Live business analytics and performance metrics.</p>
+      </div>
+      <button class="logout-btn" onclick="logout()">Sign Out</button>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-title">Platform Fee (7D)</div>
+        <div class="stat-value" id="val-rev">₹0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-title">Total Orders (7D)</div>
+        <div class="stat-value" id="val-ord">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-title">Top Selling Item</div>
+        <div class="stat-value" id="val-top" style="font-size: 22px;">-</div>
+      </div>
+      
+    </div>
+
+    <!-- Dashboard -->
+    <div class="dashboard-grid">
+      
+      <!-- Chart -->
+      <div class="card">
+        <div class="card-title">Platform Fee Trend (₹2/Order)</div>
+        <canvas id="revenueChart" height="120"></canvas>
+      </div>
+
+      <!-- Top Items -->
+      <div class="card">
+        <div class="card-title">Top Items 🥇</div>
+        <div id="top-items-list" style="text-align:center;">
+           <div class="loader"></div>
+        </div>
+      </div>
+
+      
+
+    </div>
+  </div>
+
+  <script>
+    let chartInstance = null;
+
+    // Check Auth
+    fetch('/api/auth/check').then(r => r.json()).then(d => {
+        if(d.success && d.role === 'super') {
+            document.getElementById('login-overlay').style.display = 'none';
+            loadAnalytics();
+        }
+    }).catch(e => console.log('Not authenticated'));
+
+    document.getElementById('l-pass').addEventListener('keyup', e => {
+      if(e.key === 'Enter') doLogin();
+    });
+
+    async function doLogin() {
+        let u = document.getElementById('l-user').value;
+        let p = document.getElementById('l-pass').value;
+        let r = await fetch('/api/login', {
+            method:'POST', headers:{'Content-Type':'application/json'},
+            body: JSON.stringify({role: 'super', user: u, pass: p})
+        });
+        let d = await r.json();
+        if(d.success) {
+            document.getElementById('login-overlay').style.display = 'none';
+            document.getElementById('l-err').style.display = 'none';
+            loadAnalytics();
+        } else { 
+            document.getElementById('l-err').style.display = 'block'; 
+        }
+    }
+
+    function logout() {
+        document.cookie = 'auth_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+        window.location.reload();
+    }
+
+    async function loadAnalytics() {
+        try {
+            const res = await fetch('/api/analytics');
+            if(res.status === 401) { window.location.reload(); return; }
+            const data = await res.json();
+            
+            if(data.success) {
+                renderStats(data);
+            }
+        } catch(e) {
+            console.error(e);
+        }
+    }
+
+    function renderStats(data) {
+        // 1. Calculate totals from sevenDays
+        let totalRev = 0;
+        let totalOrd = 0;
+        const labels = [];
+        const revData = [];
+
+        data.sevenDays.forEach(day => {
+            const myFee = parseInt(day.orders) * 2;
+            totalRev += myFee;
+            totalOrd += parseInt(day.orders);
+            // Format date nicely
+            const d = new Date(day.date);
+            labels.push(d.toLocaleDateString('en-IN', { weekday: 'short', month: 'short', day: 'numeric' }));
+            revData.push(myFee);
+        });
+
+        document.getElementById('val-rev').innerText = '₹' + totalRev.toLocaleString();
+        document.getElementById('val-ord').innerText = totalOrd;
+        
+        if(data.topItems.length > 0) {
+            document.getElementById('val-top').innerText = data.topItems[0].name;
+        }
+
+        // 2. Render Chart
+        const ctx = document.getElementById('revenueChart').getContext('2d');
+        if(chartInstance) chartInstance.destroy();
+        
+        let gradient = ctx.createLinearGradient(0, 0, 0, 400);
+        gradient.addColorStop(0, 'rgba(255, 183, 0, 0.4)');
+        gradient.addColorStop(1, 'rgba(255, 183, 0, 0.0)');
+
+        chartInstance = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Platform Fee (₹)',
+                    data: revData,
+                    borderColor: '#ffb700',
+                    backgroundColor: gradient,
+                    borderWidth: 3,
+                    pointBackgroundColor: '#1e3426',
+                    pointBorderColor: '#ffb700',
+                    pointBorderWidth: 2,
+                    pointRadius: 5,
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { beginAtZero: true, grid: { borderDash: [5, 5], color: '#e4e7e1' } },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
+
+        // 3. Render Top Items
+        let topHtml = '';
+        data.topItems.forEach(item => {
+            topHtml += `
+                <div class="list-item">
+                    <div>
+                        <div class="item-name">${item.name}</div>
+                        <div class="item-sub">Sold: ${item.qty} times</div>
+                    </div>
+                    <div class="item-value">₹${item.revenue.toLocaleString()}</div>
+                </div>
+            `;
+        });
+        document.getElementById('top-items-list').innerHTML = topHtml || '<p style="color:#8a968f;">No data yet.</p>';
+        document.getElementById('top-items-list').style.textAlign = 'left';
+
+         
+    }
+  </script>
+</body>
+</html>

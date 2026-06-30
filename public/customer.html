@@ -1,0 +1,3275 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>CHAAPSHALA - School of Swad</title>
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *,
+    *::before,
+    *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --white: #ffffff;
+      --bg: #f0ede9;
+      --card: #ffffff;
+      --border: #e4e7e1;
+      --border2: #cfd4cc;
+      --text: #1e3426;
+      --text2: #4a5c50;
+      --text3: #8a968f;
+      --accent: #345b42;
+      --accent2: #1e3426;
+      --gold: #1e3426;
+      --gold-bg: #ffb700;
+      --gold-border: #e5a400;
+      --green: #ffb700;
+      --green-bg: #345b42;
+      --green-border: #1e3426;
+      --radius: 16px;
+      --radius-sm: 10px;
+      --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      max-width: 540px;
+      margin: 0 auto;
+      position: relative;
+      animation: fadeInSmooth 0.8s ease-out forwards;
+    }
+    @keyframes fadeInSmooth {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    /* ── HERO ── */
+    .hero {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(232, 228, 223, 0.5);
+      padding: 16px 16px 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+    }
+
+    .hero-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 10px;
+    }
+
+    .rest-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-mark {
+      width: 40px;
+      height: 40px;
+      background: var(--accent);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Poppins', sans-serif;
+      font-size: 18px;
+      color: white;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .rest-name {
+      font-family: 'Poppins', sans-serif;
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.2;
+    }
+
+    .rest-sub {
+      font-size: 11px;
+      color: var(--text3);
+      margin-top: 2px;
+    }
+
+    .table-chip {
+      background: var(--gold-bg);
+      color: var(--gold);
+      font-size: 11px;
+      font-weight: 600;
+      padding: 5px 13px;
+      border-radius: 20px;
+      border: 1px solid var(--gold-border);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .cb-strip {
+      background: var(--green-bg);
+      border: 1px solid var(--green-border);
+      border-radius: var(--radius-sm);
+      padding: 7px 12px;
+      font-size: 11px;
+      color: var(--green);
+      font-weight: 500;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* ── SEARCH + FILTER ── */
+    .search-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .search-bar {
+      flex: 1;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 9px 14px;
+      font-size: 13px;
+      color: var(--text);
+      font-family: 'Poppins', sans-serif;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .search-bar:focus {
+      border-color: var(--border2);
+    }
+
+    .filter-btn {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 9px 16px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text2);
+      cursor: pointer;
+      white-space: nowrap;
+      font-family: 'Poppins', sans-serif;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .filter-btn:hover,
+    .filter-btn.active {
+      background: var(--text);
+      color: var(--white);
+      border-color: var(--text);
+    }
+
+    .active-filters {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      padding-bottom: 10px;
+      min-height: 10px;
+    }
+
+    .active-filters::-webkit-scrollbar {
+      display: none;
+    }
+
+    .af-chip {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: white;
+      border-radius: 20px;
+      padding: 4px 10px;
+      font-size: 11px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      white-space: nowrap;
+      cursor: pointer;
+      flex-shrink: 0;
+      box-shadow: 0 2px 8px rgba(188, 17, 30, 0.2);
+    }
+
+    /* ── MENU BODY ── */
+    .menu-body {
+      padding: 8px 14px 140px;
+    }
+
+    .sec-title {
+      font-family: 'Poppins', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      margin: 20px 0 10px;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .sec-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(to right, var(--border), transparent);
+    }
+
+    .menu-item {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 13px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+    }
+
+    .menu-item:hover {
+      border-color: var(--border2);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+      transform: translateY(-3px);
+    }
+
+    .mi-left {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .mi-name {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text);
+      line-height: 1.3;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .vdot {
+      width: 8px;
+      height: 8px;
+      border: 1.5px solid #2e7d52;
+      border-radius: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .vdot::after {
+      content: '';
+      width: 4px;
+      height: 4px;
+      background: #2e7d52;
+      border-radius: 50%;
+    }
+
+    .mi-price-line {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 5px;
+    }
+
+    .mi-price {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .mi-tag {
+      font-size: 10px;
+      color: var(--text3);
+      background: var(--bg);
+      padding: 2px 7px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+    }
+
+    .mi-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-left: 12px;
+      flex-shrink: 0;
+    }
+
+    .qty-badge {
+      background: var(--accent);
+      color: white;
+      font-size: 11px;
+      font-weight: 600;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .qty-badge.show {
+      display: flex;
+    }
+
+    .add-btn {
+      background: white;
+      border: 1px solid var(--accent);
+      border-radius: var(--radius-sm);
+      padding: 6px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--accent);
+      cursor: pointer;
+      font-family: 'Poppins', sans-serif;
+      transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+      box-shadow: 0 2px 8px rgba(188, 17, 30, 0.1);
+    }
+
+    .add-btn:hover,
+    .add-btn.added {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: white;
+      border-color: transparent;
+      transform: scale(1.05);
+      box-shadow: 0 4px 12px rgba(188, 17, 30, 0.25);
+    }
+
+    /* ── CART BAR ── */
+    .cart-bar {
+      position: fixed;
+      bottom: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: calc(100% - 28px);
+      max-width: 512px;
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+      color: white;
+      border-radius: 14px;
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+      z-index: 200;
+      box-shadow: 0 8px 32px rgba(188, 17, 30, 0.35);
+    }
+
+    .cart-bar.show {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .cart-bar:hover {
+      background: var(--accent2);
+    }
+
+    .cb-left {
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .cb-cnt {
+      font-size: 11px;
+      opacity: 0.8;
+      margin-bottom: 1px;
+    }
+
+    .cb-total {
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .cb-cta {
+      font-size: 12px;
+      font-weight: 600;
+      opacity: 0.9;
+    }
+
+    /* ── MODALS ── */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.45);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      z-index: 400;
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+    }
+
+    .modal-overlay.open {
+      display: flex;
+    }
+
+    .modal-sheet {
+      background: var(--white);
+      border-radius: 20px 20px 0 0;
+      width: 100%;
+      max-width: 540px;
+      padding: 16px;
+      max-height: 92vh;
+      overflow-y: auto;
+      animation: slideUp 0.3s ease;
+    }
+
+    @keyframes slideUp {
+      from {
+        transform: translateY(30px);
+        opacity: 0;
+      }
+
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .sheet-handle {
+      width: 36px;
+      height: 4px;
+      background: var(--border2);
+      border-radius: 2px;
+      margin: 0 auto 16px;
+    }
+
+    .sheet-title {
+      font-family: 'Poppins', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .sheet-sub {
+      font-size: 12px;
+      color: var(--text3);
+      margin-bottom: 16px;
+      line-height: 1.5;
+    }
+
+    /* ── SIZE OPTIONS ── */
+    .size-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin: 14px 0;
+    }
+
+    .size-grid.three {
+      grid-template-columns: 1fr 1fr 1fr;
+    }
+
+    .size-opt {
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 10px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.15s;
+      background: var(--bg);
+    }
+
+    .size-opt:hover {
+      border-color: var(--accent);
+    }
+
+    .size-opt.sel {
+      border-color: var(--accent);
+      background: #fff5f4;
+    }
+
+    .size-opt-lbl {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .size-opt-price {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--accent);
+      margin-top: 5px;
+    }
+
+    .size-opt-note {
+      font-size: 10px;
+      color: var(--text3);
+      margin-top: 3px;
+    }
+
+    /* ── QTY ROW ── */
+    .qty-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+    }
+
+    .qty-ctl {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 7px 12px;
+    }
+
+    .qty-b {
+      width: 26px;
+      height: 26px;
+      border-radius: 6px;
+      border: 1px solid var(--border2);
+      background: white;
+      color: var(--text);
+      font-size: 18px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+      line-height: 1;
+    }
+
+    .qty-b:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .qty-n {
+      font-size: 15px;
+      font-weight: 700;
+      min-width: 24px;
+      text-align: center;
+      color: var(--text);
+    }
+
+    .atc-btn {
+      flex: 1;
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: var(--radius-sm);
+      padding: 13px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: 'Poppins', sans-serif;
+      transition: background 0.15s;
+    }
+
+    .atc-btn:hover {
+      background: var(--accent2);
+    }
+
+    /* ── FILTER MODAL ── */
+    .filter-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .fc {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+      font-size: 12px;
+      cursor: pointer;
+      color: var(--text2);
+      background: var(--bg);
+      transition: all 0.15s;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .fc:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .fc.sel {
+      border-color: var(--accent);
+      background: #fff5f4;
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .filter-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .f-clear {
+      background: white;
+      border: 1px solid var(--border2);
+      border-radius: var(--radius-sm);
+      padding: 12px;
+      font-size: 13px;
+      color: var(--text2);
+      cursor: pointer;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .f-apply {
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: var(--radius-sm);
+      padding: 12px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    /* ── CART MODAL ── */
+    .cart-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .cr-name {
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .cr-sub {
+      font-size: 11px;
+      color: var(--text3);
+      margin-top: 2px;
+    }
+
+    .cr-price {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .sum-box {
+      background: var(--bg);
+      border-radius: var(--radius-sm);
+      padding: 12px;
+      margin: 12px 0;
+      border: 1px solid var(--border);
+    }
+
+    .sum-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      color: var(--text2);
+      margin-bottom: 6px;
+    }
+
+    .sum-row:last-child {
+      margin-bottom: 0;
+    }
+
+    .sum-row.total {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+      border-top: 1px solid var(--border2);
+      padding-top: 10px;
+      margin-top: 6px;
+    }
+
+    .sum-row.cb-row {
+      color: var(--green);
+      font-weight: 500;
+    }
+
+    .pay-section-lbl {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text2);
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .pay-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .pay-opt {
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 10px 6px;
+      text-align: center;
+      cursor: pointer;
+      background: var(--bg);
+      transition: all 0.15s;
+    }
+
+    .pay-opt:hover {
+      border-color: var(--accent);
+    }
+
+    .pay-opt.sel {
+      border-color: var(--accent);
+      background: #fff5f4;
+    }
+
+    .pay-ico {
+      font-size: 18px;
+      margin-bottom: 4px;
+    }
+
+    .pay-lbl {
+      font-size: 11px;
+      color: var(--text2);
+      font-weight: 500;
+    }
+
+    .pay-opt.sel .pay-lbl {
+      color: var(--accent);
+    }
+
+    .upi-box {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 14px;
+      text-align: center;
+      margin-bottom: 12px;
+    }
+
+    .upi-qr {
+      width: 100px;
+      height: 100px;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin: 8px auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      color: var(--text3);
+    }
+
+    .note-inp {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+      font-size: 13px;
+      color: var(--text);
+      resize: none;
+      margin-bottom: 12px;
+      font-family: 'Poppins', sans-serif;
+      outline: none;
+    }
+
+    .note-inp:focus {
+      border-color: var(--border2);
+    }
+
+    .place-btn {
+      width: 100%;
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: var(--radius-sm);
+      padding: 14px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: 'Poppins', sans-serif;
+      transition: background 0.15s;
+    }
+
+    .place-btn:hover {
+      background: var(--accent2);
+    }
+
+    .back-btn {
+      width: 100%;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 12px;
+      font-size: 13px;
+      color: var(--text2);
+      cursor: pointer;
+      margin-top: 8px;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    /* ── SUCCESS ── */
+    .success-wrap {
+      padding: 32px 16px;
+      text-align: center;
+    }
+
+    .s-icon {
+      font-size: 56px;
+      margin-bottom: 14px;
+    }
+
+    .s-title {
+      font-family: 'Poppins', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .s-sub {
+      font-size: 13px;
+      color: var(--text2);
+      line-height: 1.6;
+    }
+
+    .s-oid {
+      display: inline-block;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 5px 16px;
+      font-size: 12px;
+      color: var(--text2);
+      margin: 12px 0;
+    }
+
+    .cb-won {
+      background: var(--green-bg);
+      border: 1px solid var(--green-border);
+      border-radius: var(--radius);
+      padding: 16px;
+      margin: 12px 0;
+    }
+
+    .cbw-lbl {
+      font-size: 11px;
+      color: var(--green);
+      font-weight: 500;
+    }
+
+    .cbw-amt {
+      font-size: 34px;
+      font-weight: 700;
+      color: var(--green);
+    }
+
+    .cbw-sub {
+      font-size: 11px;
+      color: var(--green);
+      opacity: 0.8;
+      margin-top: 3px;
+    }
+
+    .eta-box {
+      background: var(--bg);
+      border-radius: var(--radius-sm);
+      padding: 10px 14px;
+      font-size: 13px;
+      color: var(--text2);
+      margin: 12px 0;
+    }
+
+    .empty-msg {
+      padding: 48px 20px;
+      text-align: center;
+      color: var(--text3);
+      font-size: 14px;
+    }
+  
+    /* -- FIXED ALIGNMENT FOR QTY BADGE AND ADD BTN -- */
+    .modern-item-action {
+      display: flex !important;
+      align-items: center !important;
+      gap: 6px !important;
+    }
+    .qty-badge {
+      display: none;
+      background: var(--gold-bg) !important;
+      color: var(--accent2) !important;
+      font-size: 14px !important;
+      font-weight: 800 !important;
+      border-radius: 8px !important;
+      height: 32px !important;
+      min-width: 32px !important;
+      padding: 0 10px !important;
+      box-sizing: border-box !important;
+      text-align: center !important;
+      line-height: 32px !important;
+    }
+    .qty-badge.show { 
+      display: block !important; 
+    }
+    .add-btn {
+      height: 32px !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      box-sizing: border-box !important;
+      border-radius: 8px !important;
+      padding: 0 18px !important;
+    }
+    .add-btn.added {
+      padding: 0 12px !important;
+      min-width: 32px !important;
+    }
+
+  </style>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <style>
+    .view {
+      display: none !important;
+    }
+
+    .view.active {
+      display: block !important;
+    }
+
+    #login-view.active {
+      display: flex !important;
+    }
+
+    /* Login Form Styles */
+    #login-view {
+      padding: 40px 20px;
+      text-align: center;
+      height: 100vh;
+      background: var(--white);
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .login-box {
+      max-width: 400px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .input-group {
+      margin-bottom: 20px;
+      text-align: left;
+    }
+
+    .input-group label {
+      display: block;
+      font-size: 13px;
+      color: var(--text2);
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+
+    .input-group input {
+      width: 100%;
+      padding: 14px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 16px;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .btn-main {
+      width: 100%;
+      padding: 15px;
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    /* ================= MENU CARD STYLES ================= */
+    .menu-body { padding: 20px 14px 140px; }
+    
+    /* Mandap Header */
+    .sec-title {
+      display: block !important;
+      text-align: center;
+      font-family: 'Poppins', sans-serif;
+      font-size: 24px !important;
+      color: #bc111e !important;
+      margin: 40px 0 20px !important;
+      padding: 12px 0 !important;
+      position: relative;
+      background: transparent !important;
+      border-top: 2px solid #d4aa55 !important;
+      border-bottom: 2px solid #d4aa55 !important;
+    }
+    .sec-title::before {
+      content: '❖';
+      position: absolute;
+      top: -14px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--bg);
+      padding: 0 10px;
+      color: #d4aa55;
+      font-size: 18px;
+    }
+    .sec-title::after {
+      content: '❖';
+      position: absolute;
+      bottom: -14px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--bg);
+      padding: 0 10px;
+      color: #d4aa55;
+      font-size: 18px;
+      height: auto !important;
+    }
+
+    /* Dotted Leader Line Items */
+    .menu-item {
+      background: transparent !important;
+      border: none !important;
+      box-shadow: none !important;
+      padding: 8px 0 !important;
+      margin-bottom: 6px !important;
+      display: flex !important;
+      align-items: flex-end !important;
+      justify-content: space-between !important;
+    }
+    .menu-item:hover {
+      transform: none !important;
+      box-shadow: none !important;
+    }
+    .mi-left {
+      display: flex !important;
+      flex: 1 !important;
+      align-items: flex-end !important;
+    }
+    .mi-name {
+      font-size: 16px !important;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 700 !important;
+      color: #2c1e16 !important;
+      white-space: nowrap;
+      margin-bottom: 2px;
+    }
+    .dotted-leader {
+      flex: 1;
+      border-bottom: 2px dotted #d4cfc8;
+      margin: 0 8px 6px 8px;
+    }
+    .mi-price-line {
+      font-family: 'Inter', sans-serif;
+      font-weight: 700 !important;
+      font-size: 15px !important;
+      color: #bc111e !important;
+      margin-bottom: 2px;
+    }
+    .mi-tag { font-weight: normal; font-size: 10px !important; margin-left: 4px; }
+
+    /* Minimal Add Buttons */
+    .mi-right {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-left: 12px;
+      margin-bottom: 2px;
+    }
+    .add-btn {
+      background: transparent !important;
+      color: #bc111e !important;
+      border: 1px solid #bc111e !important;
+      border-radius: 4px !important;
+      padding: 3px 8px !important;
+      font-size: 11px !important;
+      font-weight: 800 !important;
+      letter-spacing: 0.5px;
+    }
+    .add-btn.added {
+      background: #bc111e !important;
+      color: white !important;
+    }
+    .qty-badge {
+      background: #bc111e !important;
+      color: white !important;
+      border-radius: 4px !important;
+      padding: 2px 6px !important;
+      font-size: 12px !important;
+      min-width: 20px;
+      text-align: center;
+      display: none;
+    }
+    .qty-badge.show { display: block !important; }
+
+    /* Hide cashback strip for elegant look */
+    
+    /* Ensure dotted leader expands properly */
+    .dotted-leader {
+      flex: 1 1 auto;
+      min-width: 20px;
+      border-bottom: 2px dotted #d4cfc8;
+      margin: 0 8px 6px 8px;
+    }
+    
+    /* Make add button look like price */
+    .add-btn {
+      padding: 4px 12px !important;
+      font-size: 14px !important;
+      border-radius: 6px !important;
+    }
+
+    /* Gumbad Mandap Category Styling */
+    .sec-title { display: none !important; }
+    .mandap-category {
+      text-align: center;
+      margin: 50px auto 20px;
+      position: relative;
+      max-width: 320px;
+    }
+    .mandap-gumbad {
+      position: relative;
+      height: 40px;
+      margin-bottom: -15px;
+      z-index: 1;
+    }
+    .gumbad-dome {
+      width: 140px;
+      height: 40px;
+      margin: 0 auto;
+      border: 2px solid #d4aa55;
+      border-bottom: none;
+      border-top-left-radius: 80px;
+      border-top-right-radius: 80px;
+      position: relative;
+    }
+    .gumbad-dome::before {
+      content: '❖';
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: #bc111e;
+      font-size: 14px;
+      background: var(--bg);
+      padding: 0 4px;
+    }
+    .gumbad-line {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: #d4aa55;
+      z-index: -1;
+    }
+    .mandap-text {
+      font-family: 'Poppins', sans-serif;
+      font-size: 24px;
+      font-weight: 700;
+      color: #bc111e;
+      background: var(--bg);
+      padding: 0 15px;
+      position: relative;
+      z-index: 2;
+    }
+
+    /* ================= PAGE TOP GUMBAD (ARCH CARD SHAPE) ================= */
+    body {
+      background: #2b1a10 !important; /* Dark wood background so the cream card stands out */
+    }
+    
+    #menu-view, #login-view {
+      background: #fdfaf5 !important;
+      max-width: 600px;
+      margin: 30px auto 0 !important;
+      border-top-left-radius: 120px;
+      border-top-right-radius: 120px;
+      border: 3px solid #d4aa55;
+      border-bottom: none;
+      box-shadow: 0 -10px 40px rgba(0,0,0,0.5);
+      position: relative;
+      overflow: hidden;
+      min-height: calc(100vh - 30px);
+    }
+    
+    /* Double border effect for the card */
+    #menu-view::before, #login-view::before {
+      content: '';
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      right: 8px;
+      bottom: 0;
+      border: 1px solid #d4aa55;
+      border-top-left-radius: 110px;
+      border-top-right-radius: 110px;
+      border-bottom: none;
+      pointer-events: none;
+      z-index: 10;
+    }
+    
+    /* Push content down so it doesn't hit the curved border */
+    .hero {
+      padding-top: 40px !important;
+    }
+
+    /* ================= HEADER GUMBAD DESIGN ================= */
+    .hero-top {
+      background: #fdfaf5 !important;
+      position: relative;
+      margin: 40px 14px 30px !important;
+      padding: 50px 20px 20px !important;
+      border: 2px solid #d4aa55;
+      border-bottom: 4px solid #bc111e !important;
+      border-top-left-radius: 160px !important;
+      border-top-right-radius: 160px !important;
+      box-shadow: 0 8px 25px rgba(188,17,30,0.05) !important;
+    }
+    
+    .hero-top::before {
+      content: '';
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      right: 8px;
+      bottom: 8px;
+      border: 1px dashed #d4aa55;
+      border-top-left-radius: 150px;
+      border-top-right-radius: 150px;
+      pointer-events: none;
+    }
+
+    .hero-top::after {
+      content: '❖';
+      position: absolute;
+      top: -14px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: #bc111e;
+      font-size: 20px;
+      background: var(--bg);
+      padding: 0 10px;
+    }
+    
+    /* Make sure the logo sits nicely inside the dome */
+    .rest-logo {
+      margin-top: 10px !important;
+    }
+    
+    /* Also style the search bar slightly so it matches */
+    .search-row {
+      margin: 0 14px 20px !important;
+    }
+    .search-bar {
+      border: 1px solid #d4aa55 !important;
+      border-radius: 20px !important;
+      background: white !important;
+    }
+
+    /* ================= HEADER ALIGNMENT FIXES ================= */
+    .rest-logo {
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      justify-content: center !important;
+      text-align: center !important;
+      width: 100%;
+    }
+    .rest-logo > div {
+      text-align: center !important;
+      width: 100%;
+    }
+    .rest-name {
+      text-align: center !important;
+      margin-top: 5px;
+    }
+    .rest-sub {
+      text-align: center !important;
+    }
+    
+    /* Make the white logo background blend smoothly into the cream card! */
+    .rest-logo img {
+      mix-blend-mode: multiply !important;
+      margin-bottom: 5px !important;
+    }
+
+    /* Center the wallet, bills, and table chips */
+    .hero-top > div:nth-child(2) {
+      justify-content: center !important;
+      margin-top: 15px;
+      width: 100%;
+    }
+    
+    /* Ensure the search bar is centered */
+    .search-row {
+      display: flex;
+      justify-content: center;
+    }
+
+    /* ================= REDUCE HEADER SPACING ================= */
+    .hero-top {
+      margin: 30px 14px 15px !important;
+      padding: 35px 15px 15px !important;
+      gap: 5px !important;
+    }
+    
+    .rest-logo img {
+      margin-bottom: 2px !important;
+      width: 100px !important;
+      height: 100px !important;
+    }
+    
+    .rest-name {
+      margin-top: 2px !important;
+      font-size: 20px !important;
+    }
+    
+    /* Chips container */
+    .hero-top > div:nth-child(2) {
+      margin-top: 8px !important;
+    }
+    
+    /* Search row */
+    .search-row {
+      margin: 0 14px 10px !important;
+    }
+    
+    /* Reduce spacing for Categories as well just in case */
+    .mandap-category {
+      margin: 30px auto 10px !important;
+    }
+
+    /* ================= FINAL HEADER SPACING FIXES ================= */
+    .hero-top {
+      padding: 20px 15px 15px !important; /* Reduced top padding */
+    }
+    
+    .rest-logo img {
+      width: 120px !important;
+      height: 120px !important;
+      margin-top: -15px !important; /* Pull up towards the top arch */
+      margin-bottom: -20px !important; /* Pull CHAAPSHALA text up towards the logo */
+    }
+    
+    .rest-name {
+      margin-top: 0 !important;
+      z-index: 2; /* just in case the logo overlaps it */
+      position: relative;
+    }
+
+    /* ================= CASCADING ANIMATION V2 ================= */
+    @keyframes cascadeDown {
+      0% { 
+        opacity: 0; 
+        transform: translateY(-80px) scale(0.95); 
+      }
+      50% {
+        opacity: 1;
+      }
+      100% { 
+        opacity: 1; 
+        transform: translateY(0) scale(1); 
+      }
+    }
+    
+    .cascade-animate {
+      opacity: 0;
+      /* Much slower duration for smooth majestic glide */
+      animation: cascadeDown 1.0s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+    }
+
+    /* ================= FIX OVERLAPPING MODALS ================= */
+    .modal-overlay {
+      z-index: 2000 !important; /* Must be higher than the 1000 z-index of animations */
+    }
+    
+    .cart-bar {
+      z-index: 1500 !important; /* Must be higher than animations */
+    }
+  
+    /* --- PREMIUM MODERN UI OVERRIDES --- */
+    html { background: var(--bg) !important; }
+    body { background: var(--bg) !important; box-shadow: 0 0 40px rgba(0,0,0,0.05); }
+    
+    /* Hide old weird backgrounds */
+    .hero { background: var(--bg) !important; border: none !important; box-shadow: none !important; }
+    .hero::before, .hero::after { display: none !important; }
+    .hero-arch { display: none !important; }
+
+    /* New Category Headers */
+    .modern-category {
+      font-family: 'Poppins', sans-serif;
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--text);
+      margin: 30px 16px 15px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* New Dish Cards */
+    .modern-item {
+      background: white;
+      border-radius: 16px;
+      padding: 16px;
+      margin: 0 16px 14px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border: 1px solid var(--border);
+      transition: 0.2s;
+    }
+    .modern-item:active { transform: scale(0.98); }
+
+    .modern-item-info { flex: 1; padding-right: 15px; }
+    .modern-item-name {
+      font-family: 'Poppins', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 6px;
+      line-height: 1.3;
+    }
+    .modern-item-price {
+      font-family: 'Poppins', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    /* Action Buttons */
+    .modern-item-action {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .add-btn {
+      background: var(--bg) !important;
+      color: var(--accent) !important;
+      border: 2px solid var(--accent) !important;
+      border-radius: 8px !important;
+      padding: 6px 18px !important;
+      font-size: 13px !important;
+      font-weight: 800 !important;
+      letter-spacing: 0.5px !important;
+      box-shadow: none !important;
+      transition: 0.2s;
+    }
+    .add-btn.added {
+      background: var(--accent) !important;
+      color: white !important;
+      padding: 6px 12px !important;
+    }
+    .qty-badge {
+      background: var(--gold-bg) !important;
+      color: var(--accent2) !important;
+      font-size: 14px !important;
+      font-weight: 800 !important;
+      border-radius: 6px !important;
+      padding: 5px 12px !important;
+      display: none;
+    }
+    .qty-badge.show { display: block; }
+
+    /* Fix Floating Cart */
+    .cart-float {
+      background: var(--accent2) !important;
+      border: none !important;
+      border-radius: 16px !important;
+      box-shadow: 0 10px 30px rgba(30, 52, 38, 0.3) !important;
+    }
+    .cf-left { color: white !important; }
+    .cf-right {
+      background: var(--gold-bg) !important;
+      color: var(--accent2) !important;
+      font-weight: 800 !important;
+    }
+    .cart-drawer { background: var(--bg) !important; border-top-left-radius: 24px !important; border-top-right-radius: 24px !important; }
+    .cd-header { background: var(--accent2) !important; color: white !important; border-radius: 24px 24px 0 0 !important; }
+    .cd-close { color: white !important; }
+
+
+    /* NUKING THE OLD PAGE TOP GUMBAD ARCH */
+    body {
+      background: var(--bg) !important;
+    }
+    
+    #menu-view, #login-view {
+      background: var(--bg) !important;
+      max-width: 540px !important;
+      margin: 0 auto !important;
+      border-radius: 0 !important;
+      border: none !important;
+      box-shadow: none !important;
+      min-height: 100vh !important;
+    }
+    
+    #menu-view::before, #login-view::before {
+      display: none !important;
+    }
+    
+    .hero {
+      margin-top: 0 !important;
+      padding-top: 16px !important;
+    }
+
+</style>
+</head>
+
+<body>
+  <div id="login-view" class="view active">
+    <div class="login-box">
+      <img src="logo/logo.jpg" alt="CHAAPSHALA Logo"
+        style="width: 200px; margin: 0 auto 24px; display: block; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+      <h1 style="font-family: 'Poppins', sans-serif; margin-bottom: 5px;">CHAAPSHALA</h1>
+      <p style="color: var(--text3); font-size: 13px; margin-bottom: 30px;">Welcome! Please enter your details.</p>
+
+      <div class="input-group">
+        <label>Mobile Number</label>
+        <input type="tel" id="user-phone" placeholder="10-digit mobile number">
+      </div>
+      <div class="input-group">
+        <label>Your Name</label>
+        <input type="text" id="user-name" placeholder="E.g. Shubh Katiyar">
+      </div>
+      <button class="btn-main" onclick="handleLogin()">Start Ordering</button>
+      <div style="font-size: 11px; color: var(--text3); margin-top: 16px; text-align: center; line-height: 1.4;">By entering, you agree to receive order updates from Chaapshala.</div>
+    </div>
+  </div>
+
+  <div id="menu-view" class="view">
+
+
+    <!-- ── MODERN HERO ── -->
+    <div class="hero" style="background: var(--bg) !important; padding: 16px 16px 12px; margin-top: 0;">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+        
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <img src="logo/logo.jpg" alt="Logo" style="height: 48px; width: 48px; object-fit: contain; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+          <div style="display: flex; flex-direction: column;">
+            <div style="font-family: 'Poppins', sans-serif; font-size: 20px; font-weight: 800; color: var(--accent2); letter-spacing: 0.5px; line-height: 1.1;">CHAAPSHALA</div>
+            <div style="font-family: 'Poppins', sans-serif; font-size: 11px; color: var(--accent); font-weight: 600; margin-top: 2px;">School of Swad</div>
+          </div>
+        </div>
+
+        <div style="display:flex; flex-direction: column; gap: 6px; align-items: flex-end;">
+          <div style="display:flex; gap: 6px;">
+            <div id="wallet-chip" style="background: var(--gold-bg); color: var(--accent2); padding: 4px 8px; border-radius: 6px; font-weight: 800; font-size: 11px; box-shadow: 0 2px 5px rgba(255, 183, 0, 0.3);">💳 ₹0</div>
+            <div id="history-chip" onclick="openHistory()" style="background: white; color: var(--text); border: 1px solid var(--border); padding: 4px 8px; border-radius: 6px; font-weight: 600; font-size: 11px; cursor: pointer;">📜 Bills</div>
+          </div>
+          <div id="table-chip" style="background: var(--accent); color: white; padding: 4px 12px; border-radius: 6px; font-weight: 700; font-size: 11px;">Table 1</div>
+        </div>
+
+      </div>
+      
+      <div class="cb-strip">
+        <span>🎁</span> 5% cashback on UPI &amp; Card payments
+      </div>
+      <div class="search-row cascade-animate" style="animation-delay: 0.72s; z-index: 1005; position: relative;">
+        <input class="search-bar" type="text" placeholder="🔍  Search dishes..." id="search-inp"
+          oninput="onSearch(this.value)" />
+        <button class="filter-btn" id="filter-btn" onclick="openFilter()">☰ Filter</button>
+      </div>
+      <div class="active-filters" id="active-filters"></div>
+    </div>
+
+    <!-- ── MENU BODY ── -->
+    <div class="menu-body" id="menu-body"></div>
+
+    <!-- ── CART BAR ── -->
+    <div class="cart-bar" id="cart-bar" onclick="openCartModal()">
+      <div class="cb-left">
+        <div class="cb-cnt" id="cb-cnt">0 items</div>
+        <div>View Cart</div>
+      </div>
+      <div class="cb-total" id="cb-total">₹0</div>
+      <div class="cb-cta">Checkout →</div>
+    </div>
+
+    <!-- ── DISH DETAIL MODAL ── -->
+    <div class="modal-overlay" id="dish-modal" onclick="closeDishBg(event)">
+      <div class="modal-sheet">
+        <div class="sheet-handle"></div>
+        <div id="dish-inner"></div>
+      </div>
+    </div>
+
+    <!-- ── FILTER MODAL ── -->
+    <div class="modal-overlay" id="filter-modal" onclick="closeFilterBg(event)" style="z-index:600;">
+      <div class="modal-sheet">
+        <div class="sheet-handle"></div>
+        <div id="filter-inner"></div>
+      </div>
+    </div>
+
+    <!-- ── CART MODAL ── -->
+    <div class="modal-overlay" id="cart-modal" onclick="closeCartBg(event)" style="z-index:500;">
+      <div class="modal-sheet">
+        <div class="sheet-handle"></div>
+        <div id="cart-inner"></div>
+      </div>
+    </div>
+
+    <!-- ── HISTORY MODAL ── -->
+    <div class="modal-overlay" id="history-modal" onclick="closeHistoryBg(event)" style="z-index:550;">
+      <div class="modal-sheet">
+        <div class="sheet-handle"></div>
+        <div id="history-inner"></div>
+      </div>
+    </div>
+
+    <script>
+      var TABLE = (new URLSearchParams(window.location.search)).get('table') || '1';
+      document.getElementById('table-chip').textContent = 'Table ' + TABLE;
+
+      var MENU = [
+    {
+        "id": 1,
+        "cat": "External Examiner (Chinese)",
+        "name": "Veg. Noodles",
+        "price": 120
+    },
+    {
+        "id": 2,
+        "cat": "External Examiner (Chinese)",
+        "name": "Chilly Garlic Chowmein",
+        "price": 140
+    },
+    {
+        "id": 3,
+        "cat": "External Examiner (Chinese)",
+        "name": "Singapori Noodles",
+        "price": 160
+    },
+    {
+        "id": 4,
+        "cat": "External Examiner (Chinese)",
+        "name": "Schezwan Noodles",
+        "price": 140
+    },
+    {
+        "id": 5,
+        "cat": "External Examiner (Chinese)",
+        "name": "Paneer Noodles",
+        "price": 160
+    },
+    {
+        "id": 6,
+        "cat": "External Examiner (Chinese)",
+        "name": "Hakka Noodles",
+        "price": 150
+    },
+    {
+        "id": 7,
+        "cat": "External Examiner (Chinese)",
+        "name": "Chilly Potato",
+        "price": 120
+    },
+    {
+        "id": 8,
+        "cat": "External Examiner (Chinese)",
+        "name": "Honey Chilly Potato",
+        "price": 140
+    },
+    {
+        "id": 9,
+        "cat": "External Examiner (Chinese)",
+        "name": "Chilly Paneer (Gravy)",
+        "price": 180
+    },
+    {
+        "id": 10,
+        "cat": "External Examiner (Chinese)",
+        "name": "Chilly Paneer (Dry)",
+        "price": 200
+    },
+    {
+        "id": 11,
+        "cat": "External Examiner (Chinese)",
+        "name": "Chilly Chaap",
+        "price": 150
+    },
+    {
+        "id": 12,
+        "cat": "External Examiner (Chinese)",
+        "name": "Chilly Mushroom",
+        "price": 160
+    },
+    {
+        "id": 13,
+        "cat": "External Examiner (Chinese)",
+        "name": "Veg. Fried Rice",
+        "price": 140
+    },
+    {
+        "id": 14,
+        "cat": "External Examiner (Chinese)",
+        "name": "Chilly Garlic Fried Rice",
+        "price": 160
+    },
+    {
+        "id": 15,
+        "cat": "External Examiner (Chinese)",
+        "name": "Paneer Fried Rice",
+        "price": 180
+    },
+    {
+        "id": 16,
+        "cat": "External Examiner (Chinese)",
+        "name": "Schezwan Fried Rice",
+        "price": 160
+    },
+    {
+        "id": 17,
+        "cat": "External Examiner (Chinese)",
+        "name": "Veg. Manchurian (Gravy)",
+        "price": 160
+    },
+    {
+        "id": 18,
+        "cat": "External Examiner (Chinese)",
+        "name": "Veg. Manchurian (Dry)",
+        "price": 180
+    },
+    {
+        "id": 19,
+        "cat": "External Examiner (Chinese)",
+        "name": "Crispy Corn",
+        "price": 160
+    },
+    {
+        "id": 20,
+        "cat": "External Examiner (Chinese)",
+        "name": "Spcl. Kurkure Momo",
+        "price": 160
+    },
+    {
+        "id": 203,
+        "cat": "The Creamy Faculty",
+        "name": "Malai Masti Chaap",
+        "price": 250,
+        "hasHalf": true,
+        "halfPrice": 150,
+        "note": "Half at ₹150"
+    },
+    {
+        "id": 204,
+        "cat": "The Creamy Faculty",
+        "name": "Chaap Brown Munde",
+        "price": 250,
+        "hasHalf": true,
+        "halfPrice": 150,
+        "note": "Half at ₹150"
+    },
+    {
+        "id": 294,
+        "cat": "The Creamy Faculty",
+        "name": "Afghani Chaap",
+        "price": 250,
+        "hasHalf": true,
+        "halfPrice": 150,
+        "note": "Half at ₹150"
+    },
+    {
+        "id": 206,
+        "cat": "The Creamy Faculty",
+        "name": "Dreamy Creamy Drumstick",
+        "price": 250,
+        "hasHalf": true,
+        "halfPrice": 150,
+        "note": "Half at ₹150"
+    },
+    {
+        "id": 207,
+        "cat": "The Creamy Faculty",
+        "name": "Chaap Tammana",
+        "price": 250,
+        "hasHalf": true,
+        "halfPrice": 150,
+        "note": "Half at ₹150"
+    },
+    {
+        "id": 208,
+        "cat": "The Punjabi Faculty",
+        "name": "Mirchi Mafia Chaap",
+        "price": 250,
+        "hasHalf": true,
+        "halfPrice": 150,
+        "note": "Half at ₹150"
+    },
+    {
+        "id": 209,
+        "cat": "The Punjabi Faculty",
+        "name": "Chaap Leg Piece",
+        "price": 250,
+        "hasHalf": true,
+        "halfPrice": 150,
+        "note": "Half at ₹150"
+    },
+    {
+        "id": 210,
+        "cat": "The Punjabi Faculty",
+        "name": "Chaap Angara",
+        "price": 250,
+        "hasHalf": true,
+        "halfPrice": 150,
+        "note": "Half at ₹150"
+    },
+    {
+        "id": 211,
+        "cat": "The Punjabi Faculty",
+        "name": "Chaap Daqait",
+        "price": 250,
+        "hasHalf": true,
+        "halfPrice": 150,
+        "note": "Half at ₹150"
+    },
+    {
+        "id": 212,
+        "cat": "The Punjabi Faculty",
+        "name": "Chatkare Wali Chaap",
+        "price": 250,
+        "hasHalf": true,
+        "halfPrice": 150,
+        "note": "Half at ₹150"
+    },
+    {
+        "id": 213,
+        "cat": "The Punjabi Faculty",
+        "name": "Achar-ya Chaap",
+        "price": 250,
+        "hasHalf": true,
+        "halfPrice": 150,
+        "note": "Half at ₹150"
+    },
+    {
+        "id": 21,
+        "cat": "The Tikka Faculty",
+        "name": "Paneer Tikka",
+        "price": 270,
+        "hasHalf": true,
+        "halfPrice": 170,
+        "note": "Half at ₹170"
+    },
+    {
+        "id": 22,
+        "cat": "The Tikka Faculty",
+        "name": "Achari Paneer Tikka",
+        "price": 270,
+        "hasHalf": true,
+        "halfPrice": 170,
+        "note": "Half at ₹170"
+    },
+    {
+        "id": 23,
+        "cat": "The Tikka Faculty",
+        "name": "Peri Peri Paneer Tikka",
+        "price": 270,
+        "hasHalf": true,
+        "halfPrice": 170,
+        "note": "Half at ₹170"
+    },
+    {
+        "id": 24,
+        "cat": "The Tikka Faculty",
+        "name": "Malai paneer Tikka",
+        "price": 270,
+        "hasHalf": true,
+        "halfPrice": 170,
+        "note": "Half at ₹170"
+    },
+    {
+        "id": 25,
+        "cat": "The Tikka Faculty",
+        "name": "Afghani Paneer Tikka",
+        "price": 270,
+        "hasHalf": true,
+        "halfPrice": 170,
+        "note": "Half at ₹170"
+    },
+    {
+        "id": 214,
+        "cat": "Section - Crispy",
+        "name": "Crispy Chaap Nuggets",
+        "price": 139
+    },
+    {
+        "id": 215,
+        "cat": "Section - Crispy",
+        "name": "Supreme Drumstick",
+        "price": 139
+    },
+    {
+        "id": 216,
+        "cat": "Section - Crispy",
+        "name": "Soya Crunchy Strips",
+        "price": 139
+    },
+    {
+        "id": 217,
+        "cat": "Section - Crispy",
+        "name": "Crunchy KFC Chaap",
+        "price": 130
+    },
+    {
+        "id": 218,
+        "cat": "Mughal - E - Kebab",
+        "name": "Veg Seekh Kebab",
+        "price": 150
+    },
+    {
+        "id": 219,
+        "cat": "Mughal - E - Kebab",
+        "name": "Malai Seekh Kebab",
+        "price": 160
+    },
+    {
+        "id": 220,
+        "cat": "Veg Mo-Mo",
+        "name": "Steamed Momos",
+        "price": 99
+    },
+    {
+        "id": 221,
+        "cat": "Veg Mo-Mo",
+        "name": "Fried Momos",
+        "price": 119
+    },
+    {
+        "id": 222,
+        "cat": "Veg Mo-Mo",
+        "name": "Crispy Momos",
+        "price": 129
+    },
+    {
+        "id": 223,
+        "cat": "Veg Mo-Mo",
+        "name": "Tandoori Momos",
+        "price": 149
+    },
+    {
+        "id": 224,
+        "cat": "Veg Mo-Mo",
+        "name": "Malai Masti Momos",
+        "price": 159
+    },
+    {
+        "id": 225,
+        "cat": "Veg Mo-Mo",
+        "name": "Afghani Tandoori Momos",
+        "price": 159
+    },
+    {
+        "id": 226,
+        "cat": "Paneer Mo-Mo",
+        "name": "Paneer Steamed Momos",
+        "price": 119
+    },
+    {
+        "id": 227,
+        "cat": "Paneer Mo-Mo",
+        "name": "Paneer Fried Momos",
+        "price": 139
+    },
+    {
+        "id": 228,
+        "cat": "Paneer Mo-Mo",
+        "name": "Paneer Crispy Momos",
+        "price": 149
+    },
+    {
+        "id": 229,
+        "cat": "Paneer Mo-Mo",
+        "name": "Paneer Tandoori Momos",
+        "price": 169
+    },
+    {
+        "id": 230,
+        "cat": "Paneer Mo-Mo",
+        "name": "Paneer Malai Masti Momos",
+        "price": 179
+    },
+    {
+        "id": 231,
+        "cat": "Paneer Mo-Mo",
+        "name": "Paneer Afghani Momos",
+        "price": 179
+    },
+    {
+        "id": 232,
+        "cat": "Curry-Cullam",
+        "name": "Tawa Chaap",
+        "price": 280,
+        "hasHalf": true,
+        "halfPrice": 180,
+        "note": "Half at ₹180"
+    },
+    {
+        "id": 233,
+        "cat": "Curry-Cullam",
+        "name": "Veg Butter Chicken",
+        "price": 280,
+        "hasHalf": true,
+        "halfPrice": 180,
+        "note": "Half at ₹180"
+    },
+    {
+        "id": 234,
+        "cat": "Curry-Cullam",
+        "name": "Bunk - E - Josh",
+        "price": 280,
+        "hasHalf": true,
+        "halfPrice": 180,
+        "note": "Half at ₹180"
+    },
+    {
+        "id": 235,
+        "cat": "Curry-Cullam",
+        "name": "Teekha Master Chaap",
+        "price": 280,
+        "hasHalf": true,
+        "halfPrice": 180,
+        "note": "Half at ₹180"
+    },
+    {
+        "id": 236,
+        "cat": "Curry-Cullam",
+        "name": "Kali Mirch Chaap",
+        "price": 280,
+        "hasHalf": true,
+        "halfPrice": 180,
+        "note": "Half at ₹180"
+    },
+    {
+        "id": 237,
+        "cat": "Curry-Cullam",
+        "name": "Dhamaka Veg Mutton",
+        "price": 280,
+        "hasHalf": true,
+        "halfPrice": 180,
+        "note": "Half at ₹180"
+    },
+    {
+        "id": 238,
+        "cat": "Curry-Cullam",
+        "name": "Chatkaredar Chaap",
+        "price": 280,
+        "hasHalf": true,
+        "halfPrice": 180,
+        "note": "Half at ₹180"
+    },
+    {
+        "id": 239,
+        "cat": "Dal - OG",
+        "name": "Dal Tadka",
+        "price": 210,
+        "hasHalf": true,
+        "halfPrice": 110,
+        "note": "Half at ₹110"
+    },
+    {
+        "id": 240,
+        "cat": "Dal - OG",
+        "name": "Dal Dhaba",
+        "price": 210,
+        "hasHalf": true,
+        "halfPrice": 110,
+        "note": "Half at ₹110"
+    },
+    {
+        "id": 241,
+        "cat": "Dal - OG",
+        "name": "Dal Bukhara",
+        "price": 230,
+        "hasHalf": true,
+        "halfPrice": 130,
+        "note": "Half at ₹130"
+    },
+    {
+        "id": 242,
+        "cat": "Dal - OG",
+        "name": "Dal Makhani",
+        "price": 240,
+        "hasHalf": true,
+        "halfPrice": 140,
+        "note": "Half at ₹140"
+    },
+    {
+        "id": 243,
+        "cat": "Main Syllabus",
+        "name": "Mix Veg",
+        "price": 210,
+        "hasHalf": true,
+        "halfPrice": 110,
+        "note": "Half at ₹110"
+    },
+    {
+        "id": 244,
+        "cat": "Main Syllabus",
+        "name": "Kashmiri Dum Aloo",
+        "price": 210,
+        "hasHalf": true,
+        "halfPrice": 110,
+        "note": "Half at ₹110"
+    },
+    {
+        "id": 245,
+        "cat": "Main Syllabus",
+        "name": "Kali Mirch Paneer",
+        "price": 270,
+        "hasHalf": true,
+        "halfPrice": 170,
+        "note": "Half at ₹170"
+    },
+    {
+        "id": 246,
+        "cat": "Main Syllabus",
+        "name": "Paneer Butter Masala",
+        "price": 270,
+        "hasHalf": true,
+        "halfPrice": 170,
+        "note": "Half at ₹170"
+    },
+    {
+        "id": 247,
+        "cat": "Main Syllabus",
+        "name": "Paneer Lababdar",
+        "price": 270,
+        "hasHalf": true,
+        "halfPrice": 170,
+        "note": "Half at ₹170"
+    },
+    {
+        "id": 248,
+        "cat": "Main Syllabus",
+        "name": "Shahi Paneer",
+        "price": 270,
+        "hasHalf": true,
+        "halfPrice": 170,
+        "note": "Half at ₹170"
+    },
+    {
+        "id": 249,
+        "cat": "Main Syllabus",
+        "name": "Kadhai Paneer",
+        "price": 270,
+        "hasHalf": true,
+        "halfPrice": 170,
+        "note": "Half at ₹170"
+    },
+    {
+        "id": 250,
+        "cat": "Main Syllabus",
+        "name": "Paneer Angara",
+        "price": 270,
+        "hasHalf": true,
+        "halfPrice": 170,
+        "note": "Half at ₹170"
+    },
+    {
+        "id": 251,
+        "cat": "Main Syllabus",
+        "name": "Paneer Tikka Masala",
+        "price": 270,
+        "hasHalf": true,
+        "halfPrice": 170,
+        "note": "Half at ₹170"
+    },
+    {
+        "id": 268,
+        "cat": "Rice & Biryani",
+        "name": "Plain Rice",
+        "price": 80
+    },
+    {
+        "id": 269,
+        "cat": "Rice & Biryani",
+        "name": "Plain Curd",
+        "price": 80
+    },
+    {
+        "id": 270,
+        "cat": "Rice & Biryani",
+        "name": "Jeera Rice",
+        "price": 100
+    },
+    {
+        "id": 271,
+        "cat": "Rice & Biryani",
+        "name": "Boondi Raita",
+        "price": 100
+    },
+    {
+        "id": 272,
+        "cat": "Rice & Biryani",
+        "name": "Veg Raita",
+        "price": 100
+    },
+    {
+        "id": 273,
+        "cat": "Rice & Biryani",
+        "name": "Veg Biryani",
+        "price": 160
+    },
+    {
+        "id": 274,
+        "cat": "Rice & Biryani",
+        "name": "Veg Keema Biryani",
+        "price": 200
+    },
+    {
+        "id": 275,
+        "cat": "Rice & Biryani",
+        "name": "Veg Soya Biryani",
+        "price": 200
+    },
+    {
+        "id": 278,
+        "cat": "Desserts",
+        "name": "Gulab Jamun",
+        "price": 30
+    },
+    {
+        "id": 279,
+        "cat": "Desserts",
+        "name": "Ice Cream",
+        "price": 40
+    },
+    {
+        "id": 280,
+        "cat": "Desserts",
+        "name": "Gulab Jamun With Ice Cream",
+        "price": 55
+    },
+    {
+        "id": 281,
+        "cat": "Desserts",
+        "name": "Gajar Ka Halwa (Seasonal)",
+        "price": 65
+    },
+    {
+        "id": 282,
+        "cat": "Pocket Money Meals",
+        "name": "Tawa Chaap + 2 Rumali Roti",
+        "price": 139
+    },
+    {
+        "id": 283,
+        "cat": "Pocket Money Meals",
+        "name": "Veg Butter Chicken + Rumali Roti",
+        "price": 139
+    },
+    {
+        "id": 284,
+        "cat": "Fizz-ics Lab",
+        "name": "Minty Bliss Mojito",
+        "price": 89
+    },
+    {
+        "id": 285,
+        "cat": "Fizz-ics Lab",
+        "name": "Blue Ink Injection",
+        "price": 89
+    },
+    {
+        "id": 286,
+        "cat": "Fizz-ics Lab",
+        "name": "Rosy Mint Lemonade",
+        "price": 89
+    },
+    {
+        "id": 287,
+        "cat": "Fizz-ics Lab",
+        "name": "Lime Twist Soda (Sweet/Salt)",
+        "price": 89
+    },
+    {
+        "id": 288,
+        "cat": "Fizz-ics Lab",
+        "name": "Melon Mint Chill",
+        "price": 89
+    },
+    {
+        "id": 295,
+        "cat": "The Bhatti Wing",
+        "name": "Rumali Roti",
+        "price": 15,
+        "hasHalf": false,
+        "halfPrice": null,
+        "note": ""
+    },
+    {
+        "id": 296,
+        "cat": "The Bhatti Wing",
+        "name": "Plain Roti",
+        "price": 20,
+        "hasHalf": false,
+        "halfPrice": null,
+        "note": ""
+    },
+    {
+        "id": 297,
+        "cat": "The Bhatti Wing",
+        "name": "Butter Roti",
+        "price": 25,
+        "hasHalf": false,
+        "halfPrice": null,
+        "note": ""
+    },
+    {
+        "id": 298,
+        "cat": "The Bhatti Wing",
+        "name": "Missi Roti",
+        "price": 40,
+        "hasHalf": false,
+        "halfPrice": null,
+        "note": ""
+    },
+    {
+        "id": 299,
+        "cat": "The Bhatti Wing",
+        "name": "Plain Naan",
+        "price": 45,
+        "hasHalf": false,
+        "halfPrice": null,
+        "note": ""
+    },
+    {
+        "id": 300,
+        "cat": "The Bhatti Wing",
+        "name": "Lachcha Parantha",
+        "price": 45,
+        "hasHalf": false,
+        "halfPrice": null,
+        "note": ""
+    },
+    {
+        "id": 301,
+        "cat": "The Bhatti Wing",
+        "name": "Butter Naan",
+        "price": 50,
+        "hasHalf": false,
+        "halfPrice": null,
+        "note": ""
+    },
+    {
+        "id": 302,
+        "cat": "The Bhatti Wing",
+        "name": "Stuff Naan",
+        "price": 65,
+        "hasHalf": false,
+        "halfPrice": null,
+        "note": ""
+    },
+    {
+        "id": 303,
+        "cat": "The Bhatti Wing",
+        "name": "Garlic Naan",
+        "price": 60,
+        "hasHalf": false,
+        "halfPrice": null,
+        "note": ""
+    },
+    {
+        "id": 304,
+        "cat": "The Bhatti Wing",
+        "name": "Aloo Parantha",
+        "price": 60,
+        "hasHalf": false,
+        "halfPrice": null,
+        "note": ""
+    },
+    {
+        "id": 305,
+        "cat": "The Bhatti Wing",
+        "name": "Aloo Pyaaz Parantha",
+        "price": 70,
+        "hasHalf": false,
+        "halfPrice": null,
+        "note": ""
+    },
+    {
+        "id": 306,
+        "cat": "The Bhatti Wing",
+        "name": "Gobhi Parantha",
+        "price": 80,
+        "hasHalf": false,
+        "halfPrice": null,
+        "note": ""
+    },
+    {
+        "id": 307,
+        "cat": "The Bhatti Wing",
+        "name": "Mix Veg Parantha",
+        "price": 90,
+        "hasHalf": false,
+        "halfPrice": null,
+        "note": ""
+    },
+    {
+        "id": 308,
+        "cat": "The Bhatti Wing",
+        "name": "Paneer Parantha",
+        "price": 90,
+        "hasHalf": false,
+        "halfPrice": null,
+        "note": ""
+    },
+    {
+        "id": 309,
+        "cat": "The Bhatti Wing",
+        "name": "Veg Keema Parantha",
+        "price": 100,
+        "hasHalf": false,
+        "halfPrice": null,
+        "note": ""
+    },
+    {
+        "id": 310,
+        "cat": "Rolls Over Rules",
+        "name": "Malai Masti Chaap Roll",
+        "price": 89,
+        "hasHalf": false,
+        "halfPrice": null,
+        "note": ""
+    },
+    {
+        "id": 311,
+        "cat": "Rolls Over Rules",
+        "name": "Afghani Chaap Roll",
+        "price": 89,
+        "hasHalf": false,
+        "halfPrice": null,
+        "note": ""
+    },
+    {
+        "id": 312,
+        "cat": "Rolls Over Rules",
+        "name": "Chaap Angara Roll",
+        "price": 89,
+        "hasHalf": false,
+        "halfPrice": null,
+        "note": ""
+    },
+    {
+        "id": 313,
+        "cat": "Rolls Over Rules",
+        "name": "Paneer Tikka Roll",
+        "price": 99,
+        "hasHalf": false,
+        "halfPrice": null,
+        "note": ""
+    },
+    {
+        "id": 314,
+        "cat": "Rolls Over Rules",
+        "name": "Veg Keema Roll",
+        "price": 99,
+        "hasHalf": false,
+        "halfPrice": null,
+        "note": ""
+    },
+    {
+        "id": 315,
+        "cat": "Rolls Over Rules",
+        "name": "Spring Roll",
+        "price": 120,
+        "hasHalf": false,
+        "halfPrice": null,
+        "note": ""
+    },
+    {
+        "id": 316,
+        "cat": "Rolls Over Rules",
+        "name": "Kurkure Spring Roll",
+        "price": 140,
+        "hasHalf": false,
+        "halfPrice": null,
+        "note": ""
+    },
+    {
+        "id": 317,
+        "cat": "Rolls Over Rules",
+        "name": "Tandoori Spring Roll",
+        "price": 160,
+        "hasHalf": false,
+        "halfPrice": null,
+        "note": ""
+    },
+    {
+        "id": 318,
+        "cat": "Fries",
+        "name": "French Fries",
+        "price": 70,
+        "hasHalf": false,
+        "halfPrice": null,
+        "note": ""
+    },
+    {
+        "id": 319,
+        "cat": "Fries",
+        "name": "Peri Peri Fries",
+        "price": 90,
+        "hasHalf": false,
+        "halfPrice": null,
+        "note": ""
+    },
+    {
+        "id": 320,
+        "cat": "Fries",
+        "name": "Cheesy Fries",
+        "price": 120,
+        "hasHalf": false,
+        "halfPrice": null,
+        "note": ""
+    },
+    {
+        "id": 321,
+        "cat": "Soups",
+        "name": "Cream Of Tomato",
+        "price": 99,
+        "hasHalf": false,
+        "halfPrice": null,
+        "note": ""
+    },
+    {
+        "id": 322,
+        "cat": "Soups",
+        "name": "Sweet Corn Soup",
+        "price": 99,
+        "hasHalf": false,
+        "halfPrice": null,
+        "note": ""
+    },
+    {
+        "id": 323,
+        "cat": "Soups",
+        "name": "Manchow Soup",
+        "price": 99,
+        "hasHalf": false,
+        "halfPrice": null,
+        "note": ""
+    },
+    {
+        "id": 324,
+        "cat": "Soups",
+        "name": "Hot & Sour",
+        "price": 99,
+        "hasHalf": false,
+        "halfPrice": null,
+        "note": ""
+    },
+    {
+        "id": 325,
+        "cat": "Soups",
+        "name": "Lung Fung",
+        "price": 99,
+        "hasHalf": false,
+        "halfPrice": null,
+        "note": ""
+    },
+    {
+        "id": 326,
+        "cat": "Shake-e-nomics",
+        "name": "Tea",
+        "price": 20,
+        "hasHalf": false,
+        "halfPrice": null,
+        "note": ""
+    },
+    {
+        "id": 327,
+        "cat": "Shake-e-nomics",
+        "name": "Spcl Tea (Gud Ki)",
+        "price": 35,
+        "hasHalf": false,
+        "halfPrice": null,
+        "note": ""
+    },
+    {
+        "id": 328,
+        "cat": "Shake-e-nomics",
+        "name": "Hand Beaten Coffee",
+        "price": 50,
+        "hasHalf": false,
+        "halfPrice": null,
+        "note": ""
+    },
+    {
+        "id": 329,
+        "cat": "Shake-e-nomics",
+        "name": "Cold Coffee",
+        "price": 99,
+        "hasHalf": false,
+        "halfPrice": null,
+        "note": ""
+    },
+    {
+        "id": 330,
+        "cat": "Shake-e-nomics",
+        "name": "Strawberry Shake",
+        "price": 109,
+        "hasHalf": false,
+        "halfPrice": null,
+        "note": ""
+    },
+    {
+        "id": 331,
+        "cat": "Shake-e-nomics",
+        "name": "Black Currant Shake",
+        "price": 109,
+        "hasHalf": false,
+        "halfPrice": null,
+        "note": ""
+    },
+    {
+        "id": 332,
+        "cat": "Shake-e-nomics",
+        "name": "Vanilla Shake",
+        "price": 109,
+        "hasHalf": false,
+        "halfPrice": null,
+        "note": ""
+    },
+    {
+        "id": 333,
+        "cat": "Shake-e-nomics",
+        "name": "Kitkat Shake",
+        "price": 119,
+        "hasHalf": false,
+        "halfPrice": null,
+        "note": ""
+    },
+    {
+        "id": 334,
+        "cat": "Shake-e-nomics",
+        "name": "Butterscotch Shake",
+        "price": 119,
+        "hasHalf": false,
+        "halfPrice": null,
+        "note": ""
+    },
+    {
+        "id": 335,
+        "cat": "Shake-e-nomics",
+        "name": "Oreo Shake",
+        "price": 119,
+        "hasHalf": false,
+        "halfPrice": null,
+        "note": ""
+    },
+    {
+        "id": 336,
+        "cat": "Shake-e-nomics",
+        "name": "Pepsi Can",
+        "price": "M.R.P",
+        "hasHalf": false,
+        "halfPrice": null,
+        "note": ""
+    },
+    {
+        "id": 337,
+        "cat": "Shake-e-nomics",
+        "name": "Mineral Water",
+        "price": "M.R.P",
+        "hasHalf": false,
+        "halfPrice": null,
+        "note": ""
+    }
+];
+
+      var CATS = [];
+      MENU.forEach(function (m) { if (CATS.indexOf(m.cat) === -1) CATS.push(m.cat); });
+
+      var cart = {}, payMethod = 'cash', selectedCats = [], searchQ = '';
+      var dishSel = null, dishSize = 'full', dishQty = 1;
+      var oidCtr = 2000;
+      var useWalletBalance = false;
+
+      // ── RENDER MENU ──────────────────────────────────────────────
+      function renderMenu() {
+        var delayIndex = 7;
+        var q = searchQ.toLowerCase();
+        var body = document.getElementById('menu-body');
+        var grouped = {};
+        MENU.forEach(function (m) {
+          if (selectedCats.length > 0 && selectedCats.indexOf(m.cat) === -1) return;
+          if (q && m.name.toLowerCase().indexOf(q) === -1) return;
+          if (!grouped[m.cat]) grouped[m.cat] = [];
+          grouped[m.cat].push(m);
+        });
+        var keys = Object.keys(grouped);
+        if (!keys.length) { body.innerHTML = '<div class="empty-msg">No dishes found 🍽️</div>'; return; }
+        var html = '';
+        keys.forEach(function (cat) {
+          html += '<div class="modern-category cascade-animate" style="animation-delay: ' + (delayIndex * 0.12) + 's; z-index: ' + (1000 - delayIndex) + ';">' + cat + '</div>';
+          delayIndex++;
+          grouped[cat].forEach(function (m) {
+            var totalQ = getTotalQty(m.id);
+            var priceTag = (m.price === 'M.R.P') ? 'M.R.P' : '₹' + m.price;
+            var btnLabel = (totalQ > 0) ? '+' : 'ADD';
+            
+            html += '<div class="modern-item cascade-animate" style="animation-delay: ' + (delayIndex * 0.12) + 's; z-index: ' + (1000 - delayIndex) + ';" onclick="openDish(' + m.id + ')">' +
+              '<div class="modern-item-info">' +
+                '<div class="modern-item-name">' + m.name + '</div>' +
+                '<div class="modern-item-price">' + priceTag + '</div>' +
+              '</div>' +
+              '<div class="modern-item-action">' +
+                '<div class="qty-badge' + (totalQ > 0 ? ' show' : '') + '" id="b' + m.id + '">' + totalQ + '</div>' +
+                '<div class="add-btn' + (totalQ > 0 ? ' added' : '') + '">' + btnLabel + '</div>' +
+              '</div>' +
+            '</div>';
+          });
+        });
+        body.innerHTML = html;
+      }
+
+      function getTotalQty(id) {
+        var tot = 0;
+        Object.values(cart).forEach(function (e) {
+          if (e.item.id === id) tot += e.qty;
+        });
+        return tot;
+      }
+
+      // ── DISH MODAL ───────────────────────────────────────────────
+      var dishPrep = 'gravy';
+      function openDish(id) {
+        dishSel = MENU.find(function (m) { return m.id === id; });
+        dishQty = 1;
+        dishSize = dishSel.isPizza ? 'small' : 'full';
+        dishPrep = 'gravy';
+        renderDishModal();
+        document.getElementById('dish-modal').classList.add('open');
+      }
+
+      function closeDishBg(e) { if (e.target === document.getElementById('dish-modal')) document.getElementById('dish-modal').classList.remove('open'); }
+
+      function getSelPrice() {
+        if (!dishSel) return 0;
+        var basePrice = dishSel.price;
+        if (dishSel.isPizza) {
+          if (dishSize === 'small') basePrice = dishSel.price;
+          else if (dishSize === 'medium') basePrice = dishSel.halfPrice;
+          else basePrice = dishSel.fullPrice;
+        } else if (dishSize === 'half' && dishSel.hasHalf) {
+          basePrice = dishSel.halfPrice;
+        }
+        return (dishSel.hasDryOption && dishPrep === 'dry') ? basePrice + 20 : basePrice;
+      }
+
+      function renderDishModal() {
+        var m = dishSel, p = getSelPrice();
+        var sHtml = '';
+        if (m.isPizza) {
+          sHtml = '<div style="font-size:12px;font-weight:600;color:#6b6560;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.5px;">Choose Size</div>' +
+            '<div class="size-grid three">' +
+            sizeCard('small', 'Small', m.price) +
+            sizeCard('medium', 'Medium', m.halfPrice) +
+            sizeCard('large', 'Large', m.fullPrice) +
+            '</div>';
+        } else if (m.hasHalf) {
+          sHtml = '<div style="font-size:12px;font-weight:600;color:#6b6560;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.5px;">Choose Portion</div>' +
+            '<div class="size-grid">' +
+            '<div class="size-opt' + (dishSize === 'half' ? ' sel' : '') + '" onclick="setSize(\'half\')">' +
+            '<div class="size-opt-lbl">Half Portion</div>' +
+            '<div class="size-opt-price">₹' + m.halfPrice + '</div>' +
+            '<div class="size-opt-note">Smaller serving</div>' +
+            '</div>' +
+            '<div class="size-opt' + (dishSize === 'full' ? ' sel' : '') + '" onclick="setSize(\'full\')">' +
+            '<div class="size-opt-lbl">Full Portion</div>' +
+            '<div class="size-opt-price">₹' + m.price + '</div>' +
+            '<div class="size-opt-note">Regular serving</div>' +
+            '</div>' +
+            '</div>';
+        }
+        
+        if (m.hasDryOption) {
+          sHtml += '<div style="font-size:12px;font-weight:600;color:#6b6560;margin-top:12px;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.5px;">Preparation</div>' +
+            '<div class="size-grid">' +
+            '<div class="size-opt' + (dishPrep === 'gravy' ? ' sel' : '') + '" onclick="setPrep(\'gravy\')">' +
+            '<div class="size-opt-lbl">Gravy</div>' +
+            '<div class="size-opt-note">Standard preparation</div>' +
+            '</div>' +
+            '<div class="size-opt' + (dishPrep === 'dry' ? ' sel' : '') + '" onclick="setPrep(\'dry\')">' +
+            '<div class="size-opt-lbl">Dry</div>' +
+            '<div class="size-opt-note">+ ₹20 Extra</div>' +
+            '</div>' +
+            '</div>';
+        }
+
+        document.getElementById('dish-inner').innerHTML =
+          '<div class="sheet-title">' + m.name + '</div>' +
+          '<div class="sheet-sub">' + m.cat + (m.note ? ' &nbsp;·&nbsp; ' + m.note : '') + '</div>' +
+          sHtml +
+          '<div class="qty-row">' +
+          '<div class="qty-ctl">' +
+          '<button class="qty-b" onclick="chQty(-1)">−</button>' +
+          '<span class="qty-n" id="dqty">' + dishQty + '</span>' +
+          '<button class="qty-b" onclick="chQty(1)">+</button>' +
+          '</div>' +
+          '<button class="atc-btn" onclick="addToCart()">Add to Cart &nbsp;·&nbsp; ₹' + (p * dishQty) + '</button>' +
+          '</div>';
+      }
+
+      function sizeCard(s, lbl, price) {
+        return '<div class="size-opt' + (dishSize === s ? ' sel' : '') + '" onclick="setSize(\'' + s + '\')">' +
+          '<div class="size-opt-lbl">' + lbl + '</div>' +
+          '<div class="size-opt-price">₹' + price + '</div>' +
+          '</div>';
+      }
+
+      function setSize(s) { dishSize = s; renderDishModal(); }
+      function setPrep(p) { dishPrep = p; renderDishModal(); }
+      function chQty(d) { dishQty = Math.max(1, dishQty + d); renderDishModal(); }
+
+      function addToCart() {
+        var key = dishSel.id + '-' + dishSize + (dishSel.hasDryOption ? '-' + dishPrep : '');
+        if (!cart[key]) cart[key] = { item: dishSel, qty: 0, size: dishSize, prep: dishSel.hasDryOption ? dishPrep : null, price: getSelPrice() };
+        cart[key].qty += dishQty;
+        document.getElementById('dish-modal').classList.remove('open');
+        updateBar();
+        renderMenu();
+      }
+
+      // ── CART BAR ─────────────────────────────────────────────────
+      function entries() { return Object.values(cart).filter(function (e) { return e.qty > 0; }); }
+      function subtotal() { return entries().reduce(function (s, e) { return s + e.price * e.qty; }, 0); }
+      function platformFee() { return entries().length > 0 ? 2 : 0; }
+      function gst() { return Math.round(subtotal() * 0.05); }
+      function total() { return subtotal() + gst() + platformFee(); }
+      function cashback() { return payMethod === 'cash' ? 0 : Math.round(subtotal() * 0.05); }
+      function totalQty() { return entries().reduce(function (s, e) { return s + e.qty; }, 0); }
+
+      function updateBar() {
+        var cnt = totalQty();
+        document.getElementById('cb-cnt').textContent = cnt + ' item' + (cnt !== 1 ? 's' : '');
+        document.getElementById('cb-total').textContent = '₹' + total();
+        document.getElementById('cart-bar').className = 'cart-bar' + (cnt > 0 ? ' show' : '');
+      }
+
+      // ── FILTER ───────────────────────────────────────────────────
+      var tempFilter = [];
+      function openFilter() {
+        tempFilter = selectedCats.slice();
+        renderFilter();
+        document.getElementById('filter-modal').classList.add('open');
+      }
+      function closeFilterBg(e) { if (e.target === document.getElementById('filter-modal')) document.getElementById('filter-modal').classList.remove('open'); }
+
+      function renderFilter() {
+        document.getElementById('filter-inner').innerHTML =
+          '<div class="sheet-title">Filter by Cuisine</div>' +
+          '<div class="sheet-sub">Select one or more categories to filter</div>' +
+          '<div class="filter-grid">' +
+          CATS.map(function (c) {
+            return '<div class="fc' + (tempFilter.indexOf(c) > -1 ? ' sel' : '') + '" onclick="toggleF(\'' + c.replace(/'/g, "\\'") + '\')">' + c + '</div>';
+          }).join('') +
+          '</div>' +
+          '<div class="filter-actions">' +
+          '<button class="f-clear" onclick="clearF()">Clear All</button>' +
+          '<button class="f-apply" onclick="applyF()">Apply</button>' +
+          '</div>';
+      }
+
+      function toggleF(c) { var i = tempFilter.indexOf(c); if (i > -1) tempFilter.splice(i, 1); else tempFilter.push(c); renderFilter(); }
+      function clearF() { tempFilter = []; renderFilter(); }
+      function applyF() {
+        selectedCats = tempFilter.slice();
+        // Clear search when filter is applied to avoid confusion
+        searchQ = '';
+        document.getElementById('search-inp').value = '';
+        document.getElementById('filter-modal').classList.remove('open');
+        renderActiveFilters();
+        renderMenu();
+      }
+
+      function renderActiveFilters() {
+        var row = document.getElementById('active-filters');
+        var btn = document.getElementById('filter-btn');
+        if (!selectedCats.length) { row.innerHTML = ''; btn.classList.remove('active'); return; }
+        btn.classList.add('active');
+        row.innerHTML = selectedCats.map(function (c) {
+          return '<div class="af-chip" onclick="removeF(\'' + c.replace(/'/g, "\\'") + '\')">' + c + ' ✕</div>';
+        }).join('');
+      }
+
+      function removeF(c) {
+        selectedCats = selectedCats.filter(function (x) { return x !== c; });
+        renderActiveFilters();
+        renderMenu();
+      }
+
+      // ── CART MODAL ───────────────────────────────────────────────
+      function openCartModal() { document.getElementById('cart-modal').classList.add('open'); renderCart(); }
+      function closeCartBg(e) { if (e.target === document.getElementById('cart-modal')) document.getElementById('cart-modal').classList.remove('open'); }
+
+      function sizeLabel(s) { return { half: 'Half', full: 'Full', small: 'Small', medium: 'Medium', large: 'Large' }[s] || s; }
+
+      function toggleWallet() { useWalletBalance = !useWalletBalance; renderCart(); }
+
+      function renderCart() {
+        var ents = entries(), sub = subtotal(), t = gst(), pf = platformFee(), tot = total(), cb = cashback();
+        
+        var walletBal = (currentUser && currentUser.wallet_balance) ? currentUser.wallet_balance : 0;
+        var wUsed = useWalletBalance ? Math.min(walletBal, tot) : 0;
+        var finalTot = tot - wUsed;
+
+        var btnTxt = 'Proceed to Pay — ₹' + finalTot;
+        if (payMethod === 'cash') btnTxt = 'Place Order (Pay Cash)';
+        if (payMethod === 'card_counter') btnTxt = 'Place Order (Swipe Card)';
+        if (payMethod === 'online') btnTxt = 'Pay via Razorpay — ₹' + finalTot;
+
+        document.getElementById('cart-inner').innerHTML =
+          '<div class="sheet-title">Your Order</div>' +
+          ents.map(function (e) {
+            return '<div class="cart-row">' +
+              '<div><div class="cr-name">' + e.item.name + '</div>' +
+              '<div class="cr-sub">' + sizeLabel(e.size) + (e.prep ? ' · ' + (e.prep === 'dry' ? 'Dry (+₹20)' : 'Gravy') : '') + ' × ' + e.qty + ' &nbsp;·&nbsp; ₹' + e.price + ' each</div></div>' +
+              '<div class="cr-price">₹' + (e.price * e.qty) + '</div>' +
+              '</div>';
+          }).join('') +
+          '<div class="sum-box">' +
+          '<div class="sum-row"><span>Subtotal</span><span>₹' + sub + '</span></div>' +
+          '<div class="sum-row"><span>GST (5%)</span><span>₹' + t + '</span></div>' +
+          (pf > 0 ? '<div class="sum-row"><span>Platform Fee (Tech Support)</span><span>₹' + pf + '</span></div>' : '') +
+          (walletBal > 0 ? 
+            '<div class="sum-row" style="margin-top:8px; cursor:pointer;" onclick="toggleWallet()">' +
+            '<label style="display:flex; align-items:center; gap:8px; cursor:pointer; width:100%;"><input type="checkbox" ' + (useWalletBalance ? 'checked' : '') + ' style="width:16px; height:16px; accent-color:var(--gold);"> <span style="font-weight:600; color:var(--gold);">Use Wallet Balance (Available: ₹' + walletBal + ')</span></label><span>' + (useWalletBalance ? '-₹' + wUsed : '') + '</span></div>' 
+            : '') +
+          (payMethod === 'online' ? '<div class="sum-row cb-row" style="margin-top:8px;"><span>🎁 Cashback earned</span><span>₹' + cb + '</span></div>' :
+            '<div class="sum-row" style="font-size:11px;color:#a09a93;"><span>Pay Online to earn cashback</span></div>') +
+          '<div class="sum-row total"><span>Total Payable</span><span>₹' + finalTot + '</span></div>' +
+          '</div>' +
+          '<div class="pay-section-lbl">Payment Method</div>' +
+          '<div class="pay-grid" style="grid-template-columns: 1fr 1fr; margin-bottom: 12px; gap: 8px;">' +
+            payOpt('online', '⚡', 'Pay Online (Razorpay)') + 
+            payOpt('card_counter', '💳', 'Card (At Counter)') + 
+            payOpt('cash', '💵', 'Cash (At Counter)') +
+          '</div>' +
+          '<textarea class="note-inp" rows="2" placeholder="Special instructions (e.g. less spicy, no onion)..."></textarea>' +
+          '<button class="place-btn" onclick="placeOrder(' + finalTot + ',' + cb + ',' + wUsed + ')">' + btnTxt + '</button>' +
+          '<button class="back-btn" onclick="document.getElementById(\'cart-modal\').classList.remove(\'open\')">← Add more items</button>';
+      }
+
+      function payOpt(m, ico, lbl) {
+        return '<div class="pay-opt' + (payMethod === m ? ' sel' : '') + '" onclick="selPay(\'' + m + '\')">' +
+          '<div class="pay-ico">' + ico + '</div><div class="pay-lbl">' + lbl + '</div>' +
+          '</div>';
+      }
+
+      function selPay(m) { payMethod = m; renderCart(); }
+
+
+      async function placeOrder(tot, cb, wUsed) {
+        if (!currentUser) return alert('Please login first!');
+        if (Object.keys(cart).length === 0) return alert('Cart is empty!');
+        
+        wUsed = wUsed || 0;
+
+        const btn = document.querySelector('.place-btn');
+        const oldText = btn ? btn.innerHTML : 'Place Order';
+        if (btn) {
+            btn.innerHTML = 'Processing...';
+            btn.disabled = true;
+        }
+
+        document.getElementById('cart-modal').classList.remove('open');
+        proceedWithOrder(tot, cb, wUsed, oldText, btn);
+      }
+
+      async function proceedWithOrder(tot, cb, wUsed, oldBtnText, btn) {
+        try {
+          const itemsArray = Object.values(cart).filter(e => e.qty > 0);
+          const orderId = 'ORD-' + Math.floor(Math.random() * 10000) + '-' + Date.now().toString().slice(-4);
+          const res = await fetch('/api/orders', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              id: orderId,
+              phone: currentUser.phone,
+              user_name: currentUser.name,
+              table_no: TABLE,
+              items: itemsArray,
+              total_amount: tot + wUsed, // Send the original total amount to the DB
+              wallet_used: wUsed,
+              payment_method: payMethod,
+              payment_status: 'pending' // ALWAYS pending until verified!
+            })
+          });
+          const data = await res.json();
+          var oid = data.order ? data.order.id : orderId;
+
+          // Update wallet balance locally
+          if (data.wallet_balance !== undefined) {
+              currentUser.wallet_balance = data.wallet_balance;
+              localStorage.setItem('currentUser', JSON.stringify(currentUser));
+              // Update wallet chip UI
+              const wChip = document.getElementById('wallet-chip');
+              if (wChip) {
+                  wChip.style.display = 'block';
+                  wChip.textContent = '💳 ₹' + currentUser.wallet_balance;
+              }
+          }
+
+          // If the wallet balance covered the entire bill, skip Razorpay
+          if (tot === 0) {
+              showSuccess(oid, cb);
+              return;
+          }
+
+          if (payMethod === 'online') {
+            // Fetch Razorpay Config
+            const configRes = await fetch('/api/config');
+            const configData = await configRes.json();
+            const rzpKeyId = configData.razorpay_key_id;
+
+            // Razorpay Online Flow
+            const payRes = await fetch('/api/pay/create', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ amount: tot })
+            });
+            const rzpData = await payRes.json();
+
+            if (rzpData.error) {
+              alert("Razorpay API Error: " + rzpData.error + "\n\n(Note: You must put your REAL Razorpay Test Keys in server.js! Dummy keys are rejecting the connection.)");
+              return;
+            }
+
+            var options = {
+              key: rzpKeyId, // Dynamic backend key
+              amount: tot * 100,
+              currency: "INR",
+              name: "CHAAPSHALA - School of Swad",
+              description: "Order #" + oid,
+              order_id: rzpData.order.id,
+              handler: async function (response) {
+                // Verify Transaction Cryptographically
+                const verRes = await fetch('/api/pay/verify', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({
+                    razorpay_payment_id: response.razorpay_payment_id,
+                    razorpay_order_id: response.razorpay_order_id,
+                    razorpay_signature: response.razorpay_signature,
+                    local_order_id: oid
+                  })
+                });
+                const vData = await verRes.json();
+                if (vData.success) {
+                  showSuccess(oid, cb);
+                } else {
+                  alert("Payment verification failed! Please contact staff.");
+                }
+              },
+              theme: { color: "#bc111e" },
+              modal: {
+                ondismiss: function () {
+                  alert("Payment cancelled. You can retry paying your pending bill.");
+                }
+              }
+            };
+            var rzp1 = new Razorpay(options);
+            rzp1.on('payment.failed', function (response) {
+              alert(response.error.description);
+            });
+            rzp1.open();
+          } else {
+            // Offline Flows (Cash, Counter Card)
+            showSuccess(oid, cb);
+          }
+
+        } catch (e) {
+          alert('Error placing order: ' + e.message);
+          if (btn) { btn.innerHTML = oldBtnText; btn.disabled = false; }
+        }
+      }
+
+      function showSuccess(oid, cb) {
+        document.getElementById('menu-body').innerHTML =
+          '<div class="success-wrap">' +
+          '<div class="s-icon">🎉</div>' +
+          '<div class="s-title">Order Placed!</div>' +
+          '<p class="s-sub">Your food is being prepared.<br>We\'ll serve it right at Table ' + TABLE + '.</p>' +
+          '<div class="s-oid">Order #' + oid + ' &nbsp;·&nbsp; Table ' + TABLE + '</div>' +
+          (cb > 0 ?
+            '<div class="cb-won"><div class="cbw-lbl">🎁 Cashback Credited</div><div class="cbw-amt">₹' + cb + '</div><div class="cbw-sub">Added to wallet — use on your next visit!</div></div>' :
+            '<div style="background:#f7f5f2;border:1px solid #e8e4df;border-radius:8px;padding:10px 14px;font-size:12px;color:#6b6560;margin:10px 0;">Pay via UPI or Card next time to earn cashback!</div>') +
+          '<div class="eta-box">⏱ Estimated time: 20–30 minutes</div>' +
+          '<button class="place-btn" onclick="location.reload()">Order More Items</button>' +
+          '</div>';
+
+        document.getElementById('active-filters').style.display = 'none';
+        document.querySelector('.search-row').style.display = 'none';
+        document.querySelector('.cb-strip').style.display = 'none';
+        document.getElementById('cart-bar').className = 'cart-bar';
+        cart = {};
+      }
+
+
+      async function fetchOrderHistory() {
+        if (!currentUser) return;
+        try {
+          const res = await fetch('/api/orders/user/' + currentUser.phone);
+          const orders = await res.json();
+          renderHistoryList(orders);
+        } catch (e) { }
+      }
+
+      function openHistory() {
+        document.getElementById('history-modal').classList.add('open');
+        document.getElementById('history-inner').innerHTML = '<div class="sheet-title" style="display:flex; justify-content:space-between; align-items:center;">My Orders & Bills <button onclick="document.getElementById(\'history-modal\').classList.remove(\'open\')" style="background:none;border:none;font-size:24px;color:var(--text);cursor:pointer;">&times;</button></div><div style="text-align:center; padding: 20px; color: var(--text3);">Loading...</div>';
+        fetchOrderHistory();
+      }
+
+      function closeHistoryBg(e) {
+        if (e.target === document.getElementById('history-modal')) document.getElementById('history-modal').classList.remove('open');
+      }
+
+      function renderHistoryList(orders) {
+        if (!orders || orders.length === 0) {
+          document.getElementById('history-inner').innerHTML = '<div class="sheet-title">My Orders & Bills</div><div class="empty-msg">No orders found yet.</div>';
+          return;
+        }
+
+        let html = '<div class="sheet-title" style="display:flex; justify-content:space-between; align-items:center;">My Orders & Bills <button onclick="document.getElementById(\'history-modal\').classList.remove(\'open\')" style="background:none;border:none;font-size:24px;color:var(--text);cursor:pointer;">&times;</button></div><div style="margin-top:10px;">';
+        orders.forEach(o => {
+          let items = [];
+          try { items = JSON.parse(o.items); } catch (e) { }
+          const d = new Date(o.timestamp);
+          const dateStr = d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+          const timeStr = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+          const fullDateTime = `${dateStr}, ${timeStr}`;
+
+
+          let statusBadge = `<span style="background:var(--bg); padding:3px 8px; border-radius:10px; font-size:10px; border:1px solid var(--border); font-weight:600;">${o.order_status.toUpperCase()}</span>`;
+          if (o.order_status === 'served') statusBadge = `<span style="background:var(--green-bg); color:var(--green); padding:3px 8px; border-radius:10px; font-size:10px; font-weight:600;">SERVED</span>`;
+          if (o.order_status === 'ready') statusBadge = `<span style="background:var(--gold-bg); color:var(--gold); padding:3px 8px; border-radius:10px; font-size:10px; font-weight:600;">READY TO SERVE</span>`;
+
+          let payBadge = `<span style="background:#fff5f4; color:var(--accent); padding:3px 8px; border-radius:10px; font-size:10px; font-weight:600;">PENDING</span>`;
+          if (o.payment_status === 'paid') payBadge = `<span style="background:var(--green-bg); color:var(--green); padding:3px 8px; border-radius:10px; font-size:10px; font-weight:600;">PAID (${o.payment_method.toUpperCase()})</span>`;
+
+          html += `
+        <div style="background:white; border:1px solid var(--border); box-shadow: 0 4px 10px rgba(0,0,0,0.03); border-radius:var(--radius); padding:16px; margin-bottom:14px;">
+            <div style="display:flex; justify-content:space-between; margin-bottom:12px; border-bottom:1px dashed var(--border); padding-bottom:12px;">
+               <div style="font-size:13px; font-weight:700;">${o.id} <br><span style="color:var(--text3); font-weight:500; font-size:11px;">${fullDateTime} · Table ${o.table_no}</span></div>
+               <div style="text-align:right;">${statusBadge} <br><div style="margin-top:6px;">${payBadge}</div></div>
+            </div>
+            ${items.map(i => `<div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:8px; color:var(--text2); font-weight:500;"><span style="flex:1;">${i.qty}x ${i.item.name} (${i.size})</span><span style="font-weight:600;">₹${i.price * i.qty}</span></div>`).join('')}
+            <div style="display:flex; justify-content:space-between; font-weight:700; font-size:15px; margin-top:12px; border-top:1px dashed var(--border); padding-top:12px; color:var(--text);">
+                <span>Total amount</span><span>₹${o.total_amount}</span>
+            </div>
+        </div>`;
+        });
+
+        html += '</div>';
+        document.getElementById('history-inner').innerHTML = html;
+      }
+
+      function onSearch(q) { searchQ = q; renderMenu(); }
+
+      renderMenu();
+    </script>
+  </div>
+  <script>
+    let currentUser = null;
+    try {
+      currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    } catch (e) { }
+
+    const socket = io();
+
+    if (!currentUser) {
+      window.location.href = '/welcome-customer.html' + window.location.search;
+    } else {
+      document.getElementById('login-view').classList.remove('active');
+      document.getElementById('menu-view').classList.add('active');
+      
+      const wChip = document.getElementById('wallet-chip');
+      if (wChip && currentUser.wallet_balance !== undefined) {
+          wChip.style.display = 'block';
+          wChip.textContent = '💳 ₹' + currentUser.wallet_balance;
+      }
+
+      // Fetch latest wallet balance from server in background
+      fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ phone: currentUser.phone, name: currentUser.name })
+      })
+      .then(res => res.json())
+      .then(data => {
+          if (data.success && data.user) {
+              currentUser = data.user;
+              localStorage.setItem('currentUser', JSON.stringify(currentUser));
+              if (wChip) wChip.textContent = '💳 ₹' + currentUser.wallet_balance;
+          }
+      }).catch(e => console.log('Silently ignoring background sync error', e));
+    }
+
+    // Real-time bill syncing
+    socket.on('order_update', (data) => {
+      if (currentUser && (data.order.phone === currentUser.phone)) {
+        // Live update the history block if modal is open
+        if (document.getElementById('history-modal').classList.contains('open')) {
+          fetchOrderHistory();
+        }
+      }
+    });
+
+    async function handleLogin() {
+      const phone = document.getElementById('user-phone').value;
+      const name = document.getElementById('user-name').value;
+      if (phone.length < 10 || !name) return alert('Enter valid details');
+
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone, name })
+      });
+      const loginData = await res.json();
+      if (!loginData.success) return alert('Login failed: ' + loginData.error);
+      currentUser = loginData.user;
+      localStorage.setItem('currentUser', JSON.stringify(currentUser));
+
+      document.getElementById('login-view').classList.remove('active');
+      document.getElementById('menu-view').classList.add('active');
+    }
+  </script>
+</body>
+
+</html>
