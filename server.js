@@ -201,11 +201,16 @@ app.post('/api/orders', async (req, res) => {
     // --- SECURITY: Server-Side Price Calculation ---
     let serverTotal = 0;
     for (let item of items) {
-        const menuItem = MENU.find(m => m.id === parseInt(item.id));
+        let dishId = item.item ? item.item.id : item.id;
+        let size = item.size || 'full';
+        let qty = item.qty || 1;
+        
+        const menuItem = MENU.find(m => m.id === parseInt(dishId));
         if (menuItem) {
-            let price = typeof menuItem.price === 'string' && menuItem.price.toLowerCase() === 'm.r.p' ? 0 : parseInt(menuItem.price);
+            let priceStr = (size === 'half' && menuItem.half_price) ? menuItem.half_price : menuItem.price;
+            let price = typeof priceStr === 'string' && priceStr.toLowerCase() === 'm.r.p' ? 0 : parseInt(priceStr);
             if(isNaN(price)) price = 0;
-            serverTotal += price * parseInt(item.qty);
+            serverTotal += price * parseInt(qty);
         }
     }
     // Override the client's total_amount with the mathematically verified total
@@ -256,7 +261,7 @@ app.get('/api/orders/user/:phone', async (req, res) => {
 });
 
 // 4. Orders: Get All (Admin / Kitchen)
-app.get('/api/orders', authMiddleware, requireRole(['super', 'admin', 'kitchen']), async (req, res) => {
+app.get('/api/orders', authMiddleware, requireRole(['super', 'admin']), async (req, res) => {
     try {
         const rows = await allQuery('SELECT * FROM orders ORDER BY timestamp DESC');
         res.json(rows);
@@ -266,7 +271,7 @@ app.get('/api/orders', authMiddleware, requireRole(['super', 'admin', 'kitchen']
 });
 
 // 5. Orders: Update Status (Kitchen: new -> preparing -> ready | Admin: ready -> served)
-app.patch('/api/orders/:id/status', authMiddleware, requireRole(['super', 'admin', 'kitchen']), async (req, res) => {
+app.patch('/api/orders/:id/status', authMiddleware, requireRole(['super', 'admin']), async (req, res) => {
     const { status } = req.body;
     const { id } = req.params;
 
